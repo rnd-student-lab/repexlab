@@ -1,5 +1,5 @@
 import { pathExists, readFile } from "fs-extra";
-import { isEmpty, map, range, reduce, split, take } from "lodash";
+import { castArray, compact, filter, includes, isEmpty, map, range, reduce, split, take, toArray } from "lodash";
 import { resolve, sep, join, dirname } from "path";
 import { ConfigFile } from "../configFile";
 import { VirtualMachine } from "./vm";
@@ -54,9 +54,40 @@ export class Virtstand {
     return path;
   }
 
-  async compile() {
-    this.virtualMachines = await Promise.all(map(this.virtualMachines, async (virtualMachine) => {
+  getVMsByNames(names) {
+    const vmNames = compact(castArray(names));
+    const vms = filter(this.virtualMachines, (vm) => isEmpty(names) || (includes(vmNames, vm.name)));
+    return vms;
+  }
+
+  async compile(names) {
+    await Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
       return virtualMachine.compile(this.utilityDirectory);
+    }));
+  }
+
+  async start(names) {
+    await Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
+      return virtualMachine.start(this.utilityDirectory);
+    }));
+  }
+
+  async stop(names) {
+    await Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
+      return virtualMachine.stop(this.utilityDirectory);
+    }));
+  }
+
+  async destroy(names) {
+    await Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
+      return virtualMachine.destroy(this.utilityDirectory);
+    }));
+  }
+
+  async status(names) {
+    return await Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
+      const status = await virtualMachine.status(this.utilityDirectory);
+      return `${virtualMachine.name}: ${status}`;
     }));
   }
 

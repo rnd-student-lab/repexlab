@@ -2,6 +2,10 @@ import { ensureDir, writeFile } from "fs-extra";
 import { dirname, join } from "path";
 import { ConfigFile } from "../../configFile";
 import { Vagranfile } from "./vagrant/vagrantfile";
+import * as vagrant from "node-vagrant";
+import { get } from "lodash";
+
+vagrant.promisify();
 
 export class VirtualMachine {
 
@@ -31,4 +35,28 @@ export class VirtualMachine {
     await writeFile(join(vmTargetDirectory, this.vagrantfileName), output);
   }
 
+  async start(targetDirectory, stage) {
+    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const machine = vagrant.create({ cwd: vmTargetDirectory });
+    await machine.up();
+  }
+
+  async stop(targetDirectory, stage) {
+    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const machine = vagrant.create({ cwd: vmTargetDirectory });
+    await machine.halt();
+  }
+
+  async destroy(targetDirectory, stage) {
+    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const machine = vagrant.create({ cwd: vmTargetDirectory });
+    await machine.destroy();
+  }
+
+  async status(targetDirectory) {
+    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const machine = vagrant.create({ cwd: vmTargetDirectory });
+    const status = await machine.status();
+    return get(status, 'default.status');
+  }
 }

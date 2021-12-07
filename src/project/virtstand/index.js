@@ -14,15 +14,17 @@ export class Virtstand {
     this.filePath = null;
     this.workingDirectory = null;
     this.utilityDirectory = null;
+    this.stage = null;
 
     this.virtualMachines = [];
   }
 
-  async init(dir) {
+  async init(dir, stage) {
     this.filePath = await this.searchMainFile(dir);
     this.config = await ConfigFile.read(this.filePath);
     this.workingDirectory = dirname(this.filePath);
     this.utilityDirectory = join(this.workingDirectory, this.utilityDirectoryName);
+    this.stage = stage;
 
     await this.initVirtualMachines();
   }
@@ -30,7 +32,7 @@ export class Virtstand {
   async initVirtualMachines() {
     this.virtualMachines = await Promise.all(map(this.config.vms, async (declaration) => {
       const virtualMachine = new VirtualMachine();
-      await virtualMachine.init(join(this.workingDirectory, declaration.path), declaration.name);
+      await virtualMachine.init(join(this.workingDirectory, declaration.path), this.stage, declaration.name);
       return virtualMachine;
     }));
   }

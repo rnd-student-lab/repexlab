@@ -7,12 +7,19 @@ import { stringify } from 'yaml';
 export const command = 'status';
 export const desc = 'Displays current status for all VMs or a single specified VM';
 export const builder = yargs =>
-  yargs.option('name', {
-    alias: 'n',
-    string: true,
-    describe: 'VM name',
-    requiresArg: false,
-  });
+  yargs
+    .option('name', {
+      alias: 'n',
+      string: true,
+      describe: 'VM name',
+      requiresArg: false,
+    })
+    .option('stage', {
+      alias: 's',
+      string: true,
+      describe: 'Stage name',
+      requiresArg: false,
+    });
 
 export const handler = async argv => {
   await compile(argv);

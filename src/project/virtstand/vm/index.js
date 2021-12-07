@@ -17,37 +17,39 @@ export class VirtualMachine {
     this.filePath = null;
     this.workingDirectory = null;
     this.name = null;
+    this.stage = null;
     this.vagrantfile = new Vagranfile();
   }
 
-  async init(path, name) {
+  async init(path, stage, name) {
     this.filePath = join(path, this.mainFileName);
     this.config = await ConfigFile.read(this.filePath);
     this.workingDirectory = dirname(this.filePath);
     this.name = name;
+    this.stage = stage;
   }
 
-  async compile(targetDirectory, stage) {
+  async compile(targetDirectory) {
     const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
-    const output = this.vagrantfile.convertObject(this.config, stage);
+    const output = this.vagrantfile.convertObject(this.config, this.stage);
 
     await ensureDir(vmTargetDirectory);
     await writeFile(join(vmTargetDirectory, this.vagrantfileName), output);
   }
 
-  async start(targetDirectory, stage) {
+  async start(targetDirectory) {
     const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.up();
   }
 
-  async stop(targetDirectory, stage) {
+  async stop(targetDirectory) {
     const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.halt();
   }
 
-  async destroy(targetDirectory, stage) {
+  async destroy(targetDirectory) {
     const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.destroy();

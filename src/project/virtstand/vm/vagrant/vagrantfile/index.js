@@ -2,7 +2,7 @@ import * as ejs from 'ejs';
 // import { readFile } from 'fs-extra';
 // import { parse } from 'yaml';
 // import { join } from 'path';
-import { merge } from 'lodash';
+import { get, merge } from 'lodash';
 import template from './vagrantfile';
 
 
@@ -32,9 +32,10 @@ export class Vagranfile {
   }
 
   convertObject(config, stage) {
-    const stageConfig = {};
+    let stageConfig = {};
     if (stage) {
       // apply stage to default config
+      stageConfig = get(config, ['stage', stage]);
     }
 
     const vm = merge({}, this.defaults, config.defaults, stageConfig);

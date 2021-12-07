@@ -1,8 +1,8 @@
 import * as ejs from 'ejs';
 // import { readFile } from 'fs-extra';
 // import { parse } from 'yaml';
-// import { join } from 'path';
-import { get, merge } from 'lodash';
+import { relative, resolve, posix, sep } from 'path';
+import { cloneDeep, each, get, join, merge, replace, set, split } from 'lodash';
 import template from './vagrantfile';
 
 
@@ -31,17 +31,34 @@ export class Vagranfile {
     }
   }
 
-  convertObject(config, stage) {
+  convertObject(config, stage, configDir, targetDir) {
     let stageConfig = {};
     if (stage) {
-      // apply stage to default config
       stageConfig = get(config, ['stage', stage]);
     }
 
     const vm = merge({}, this.defaults, config.defaults, stageConfig);
+    const vmWithUpdatedPaths = this.replacePaths(vm, configDir, targetDir);
+    return this.template(vmWithUpdatedPaths);
+  }
 
-    // console.log(this.template(vm))
-    return this.template(vm);
+  replacePaths(config, configDir, targetDir) {
+    const properties = [
+      'synced_folder.from',
+    ];
+    const updatedConfig = cloneDeep(config);
+
+    each(properties, prop => {
+      const originalPath = get(config, prop);
+      if (originalPath) { // Update only if the property exists
+        const resolvedPath = resolve(configDir, get(config, prop));
+        const relativePath = relative(targetDir, resolvedPath);
+        const posixRelativePath = join(split(relativePath, sep), posix.sep);
+        set(updatedConfig, prop, posixRelativePath);
+      }
+    });
+
+    return updatedConfig;
   }
 
   // async convertFile(path, stage) {

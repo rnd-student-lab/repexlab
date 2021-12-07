@@ -31,10 +31,11 @@ export class VirtualMachine {
 
   async compile(targetDirectory) {
     const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
-    const output = this.vagrantfile.convertObject(this.config, this.stage);
+    const vmTargetPath = join(vmTargetDirectory, this.vagrantfileName);
+    const output = this.vagrantfile.convertObject(this.config, this.stage, this.workingDirectory, vmTargetDirectory);
 
     await ensureDir(vmTargetDirectory);
-    await writeFile(join(vmTargetDirectory, this.vagrantfileName), output);
+    await writeFile(vmTargetPath, output);
   }
 
   async start(targetDirectory) {

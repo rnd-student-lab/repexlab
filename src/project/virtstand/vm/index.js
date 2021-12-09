@@ -1,14 +1,13 @@
-import { ensureDir, writeFile } from "fs-extra";
-import { dirname, join } from "path";
-import { ConfigFile } from "../../configFile";
-import { Vagranfile } from "./vagrant/vagrantfile";
-import * as vagrant from "node-vagrant";
-import { get } from "lodash";
+import { ensureDir, writeFile } from 'fs-extra';
+import { dirname, join } from 'path';
+import * as vagrant from 'node-vagrant';
+import { get } from 'lodash';
+import ConfigFile from '../../configFile';
+import Vagranfile from './vagrant/vagrantfile';
 
 vagrant.promisify();
 
-export class VirtualMachine {
-
+export default class VirtualMachine {
   constructor() {
     this.utilityDirectoryName = 'vm';
     this.vagrantfileName = 'Vagrantfile';
@@ -32,7 +31,12 @@ export class VirtualMachine {
   async compile(targetDirectory) {
     const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
     const vmTargetPath = join(vmTargetDirectory, this.vagrantfileName);
-    const output = this.vagrantfile.convertObject(this.config, this.stage, this.workingDirectory, vmTargetDirectory);
+    const output = this.vagrantfile.convertObject(
+      this.config,
+      this.stage,
+      this.workingDirectory,
+      vmTargetDirectory
+    );
 
     await ensureDir(vmTargetDirectory);
     await writeFile(vmTargetPath, output);

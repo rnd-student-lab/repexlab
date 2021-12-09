@@ -2,21 +2,20 @@ import { logProcessingStep, logSuccess, logInfo } from '../../utils/logger';
 
 export const command = 'mars';
 export const desc = 'Invade mars, its gonna be rocky';
-export const builder = yargs =>
-  yargs
-    .option('for', {
-      alias: 'f',
-      string: true,
-      describe: 'Reason to invade mars',
-      requiresArg: true,
-      default: 'fun'
-    })
-    .option('walk', {
-      alias: 'w',
-      boolean: true,
-      describe: 'Should walk to mars',
-      default: false
-    });
+export const builder = yargs => yargs
+  .option('for', {
+    alias: 'f',
+    string: true,
+    describe: 'Reason to invade mars',
+    requiresArg: true,
+    default: 'fun'
+  })
+  .option('walk', {
+    alias: 'w',
+    boolean: true,
+    describe: 'Should walk to mars',
+    default: false
+  });
 
 export const handler = argv => {
   run(argv.for, argv.walk);

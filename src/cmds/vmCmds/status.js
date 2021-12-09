@@ -1,25 +1,24 @@
-import { logSuccess, logError, logInfo } from '../../utils/logger';
-import { Virtstand } from '../../project/virtstand';
 import { isEmpty } from 'lodash';
-import { handler as compile } from './compile';
 import { stringify } from 'yaml';
+import { logSuccess, logInfo } from '../../utils/logger';
+import Virtstand from '../../project/virtstand';
+import { handler as compile } from './compile';
 
 export const command = 'status';
 export const desc = 'Displays current status for all VMs or a single specified VM';
-export const builder = yargs =>
-  yargs
-    .option('name', {
-      alias: 'n',
-      string: true,
-      describe: 'VM name',
-      requiresArg: false,
-    })
-    .option('stage', {
-      alias: 's',
-      string: true,
-      describe: 'Stage name',
-      requiresArg: false,
-    });
+export const builder = yargs => yargs
+  .option('name', {
+    alias: 'n',
+    string: true,
+    describe: 'VM name',
+    requiresArg: false,
+  })
+  .option('stage', {
+    alias: 's',
+    string: true,
+    describe: 'Stage name',
+    requiresArg: false,
+  });
 
 export const handler = async argv => {
   await compile(argv);
@@ -31,7 +30,7 @@ async function run(name) {
   await virtstand.init('./');
   if (isEmpty(name)) {
     const statuses = await virtstand.status();
-    logSuccess(`VMs statuses:`);
+    logSuccess('VMs statuses:');
     logInfo(stringify(statuses));
   } else {
     const statuses = await virtstand.status(name);

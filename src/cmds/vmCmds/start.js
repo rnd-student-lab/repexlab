@@ -1,24 +1,23 @@
-import { logSuccess, logError } from '../../utils/logger';
-import { Virtstand } from '../../project/virtstand';
 import { isEmpty } from 'lodash';
+import { logSuccess } from '../../utils/logger';
+import Virtstand from '../../project/virtstand';
 import { handler as compile } from './compile';
 
 export const command = 'start';
 export const desc = 'Starts all VMs or a single specified VM';
-export const builder = yargs =>
-  yargs
-    .option('name', {
-      alias: 'n',
-      string: true,
-      describe: 'VM name',
-      requiresArg: false,
-    })
-    .option('stage', {
-      alias: 's',
-      string: true,
-      describe: 'Stage name',
-      requiresArg: false,
-    });
+export const builder = yargs => yargs
+  .option('name', {
+    alias: 'n',
+    string: true,
+    describe: 'VM name',
+    requiresArg: false,
+  })
+  .option('stage', {
+    alias: 's',
+    string: true,
+    describe: 'Stage name',
+    requiresArg: false,
+  });
 
 export const handler = async argv => {
   await compile(argv);
@@ -30,7 +29,7 @@ async function run(name) {
   await virtstand.init('./');
   if (isEmpty(name)) {
     await virtstand.start();
-    logSuccess(`Started all VMs`);
+    logSuccess('Started all VMs');
   } else {
     await virtstand.start(name);
     logSuccess(`Started VM '${name}'.`);

@@ -1,18 +1,20 @@
 import * as ejs from 'ejs';
 // import { readFile } from 'fs-extra';
 // import { parse } from 'yaml';
-import { relative, resolve, posix, sep } from 'path';
-import { cloneDeep, each, get, join, merge, replace, set, split } from 'lodash';
+import {
+  relative, resolve, posix, sep
+} from 'path';
+import {
+  cloneDeep, each, get, join, merge, set, split
+} from 'lodash';
 import template from './vagrantfile';
 
-
-export class Vagranfile {
-
+export default class Vagranfile {
   constructor() {
     this.template = ejs.compile(template, {});
 
     this.defaults = {
-      'provider': {
+      provider: {
         provider: 'virtualbox',
         memory: 2048,
         cpus: 2,
@@ -28,7 +30,7 @@ export class Vagranfile {
           actimeo: 1
         },
       },
-    }
+    };
   }
 
   convertObject(config, stage, configDir, targetDir) {
@@ -38,11 +40,11 @@ export class Vagranfile {
     }
 
     const vm = merge({}, this.defaults, config.defaults, stageConfig);
-    const vmWithUpdatedPaths = this.replacePaths(vm, configDir, targetDir);
+    const vmWithUpdatedPaths = this.constructor.replacePaths(vm, configDir, targetDir);
     return this.template(vmWithUpdatedPaths);
   }
 
-  replacePaths(config, configDir, targetDir) {
+  static replacePaths(config, configDir, targetDir) {
     const properties = [
       'synced_folder.from',
     ];
@@ -60,15 +62,4 @@ export class Vagranfile {
 
     return updatedConfig;
   }
-
-  // async convertFile(path, stage) {
-  //   const config = await this.readFile(path);
-  //   return this.convertObject(config);
-  // }
-
-  // async readFile(path) {
-  //   const file = (await readFile(join('./', path))).toString();
-  //   return parse(file);
-  // }
 }
-

@@ -38,7 +38,6 @@ export default class PluginManager {
   async ensurePlugins() {
     await this.refreshInstalledPlugins();
 
-    console.log(this.installedPlugins);
     await reduce(this.requiredPlugins, async (acc, plugin) => {
       await acc;
       const alreadyInstalled = await this.isPluginInstalled(plugin);
@@ -46,7 +45,7 @@ export default class PluginManager {
         await this.installPlugin(plugin);
       }
     }, Promise.resolve());
+
     await this.refreshInstalledPlugins();
-    console.log(this.installedPlugins);
   }
 }

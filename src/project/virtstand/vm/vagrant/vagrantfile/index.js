@@ -5,7 +5,7 @@ import {
   relative, resolve, posix, sep
 } from 'path';
 import {
-  cloneDeep, each, get, join, merge, set, split
+  cloneDeep, each, get, join, map, merge, range, set, split
 } from 'lodash';
 import template from './vagrantfile';
 
@@ -45,8 +45,10 @@ export default class Vagranfile {
   }
 
   static replacePaths(config, configDir, targetDir) {
+    const numberOfProvisions = get(config, 'provision.length', 0);
     const properties = [
       'synced_folder.from',
+      ...map(range(0, numberOfProvisions, 1), (i) => `provision[${i}].directory`),
     ];
     const updatedConfig = cloneDeep(config);
 

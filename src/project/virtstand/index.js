@@ -88,6 +88,20 @@ export default class Virtstand {
     ));
   }
 
+  async restart(names) {
+    await Promise.all(map(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.restart(this.utilityDirectory)
+    ));
+  }
+
+  async provision(names) {
+    await Promise.all(map(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.provision(this.utilityDirectory)
+    ));
+  }
+
   async stop(names) {
     await Promise.all(map(
       this.getVMsByNames(names),

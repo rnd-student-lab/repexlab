@@ -33,6 +33,16 @@ Vagrant.configure("2") do |config|
   #  ansible.playbook = "/vagrant/vm/server/provision/playbook.yml"
   #  ansible.install_mode = "default"
   # end
+
+  <% for (let i in provision) { %>
+    config.vm.synced_folder "<%= provision[i].directory %>", "/provision/<%= i %>", :mount_options => [
+      "dmode=777","fmode=777"
+    ], type: "virtualbox"
+    config.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "/provision/<%= i %>/<%= provision[i].file %>"
+      ansible.install_mode = "default"
+    end
+  <% } %>
 end
 `;
 

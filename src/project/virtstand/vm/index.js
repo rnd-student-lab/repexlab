@@ -2,8 +2,10 @@ import { ensureDir, writeFile } from 'fs-extra';
 import { dirname, join } from 'path';
 import * as vagrant from 'node-vagrant';
 import { get } from 'lodash';
+import execa from 'execa';
 import ConfigFile from '../../configFile';
 import Vagranfile from './vagrant/vagrantfile';
+import PluginManager from './vagrant/pluginManager';
 
 vagrant.promisify();
 
@@ -28,8 +30,12 @@ export default class VirtualMachine {
     this.stage = stage;
   }
 
+  getVMTargetDirectory(targetDirectory) {
+    return join(targetDirectory, this.utilityDirectoryName, this.name);
+  }
+
   async compile(targetDirectory) {
-    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const vmTargetPath = join(vmTargetDirectory, this.vagrantfileName);
     const output = this.vagrantfile.convertObject(
       this.config,
@@ -40,28 +46,31 @@ export default class VirtualMachine {
 
     await ensureDir(vmTargetDirectory);
     await writeFile(vmTargetPath, output);
+
+    const pluginManager = new PluginManager(vmTargetDirectory);
+    await pluginManager.ensurePlugins();
   }
 
   async start(targetDirectory) {
-    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.up();
   }
 
   async stop(targetDirectory) {
-    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.halt();
   }
 
   async destroy(targetDirectory) {
-    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.destroy();
   }
 
   async status(targetDirectory) {
-    const vmTargetDirectory = join(targetDirectory, this.utilityDirectoryName, this.name);
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     const status = await machine.status();
     return get(status, 'default.status');

@@ -11,13 +11,15 @@ export const builder = yargs => yargs
     alias: 'n',
     string: true,
     describe: 'VM name',
-    requiresArg: false,
+    requiresArg: true,
+    required: false,
   })
   .option('stage', {
     alias: 's',
     string: true,
     describe: 'Stage name',
-    requiresArg: false,
+    requiresArg: true,
+    required: false,
   });
 
 export const handler = async argv => {

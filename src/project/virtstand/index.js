@@ -1,6 +1,6 @@
 import { pathExists } from 'fs-extra';
 import {
-  castArray, compact, filter, includes, isEmpty, map, range, reduce, split, take
+  castArray, compact, filter, first, includes, isEmpty, map, range, reduce, split, take
 } from 'lodash';
 import {
   resolve, sep, join, dirname
@@ -121,5 +121,17 @@ export default class Virtstand {
       const status = await virtualMachine.status(this.utilityDirectory);
       return `${virtualMachine.name}: ${status}`;
     }));
+  }
+
+  async ssh(names) {
+    const virtualMachine = first(this.getVMsByNames(names));
+    await virtualMachine.ssh(this.utilityDirectory);
+  }
+
+  async exec(names, command) {
+    await Promise.all(map(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.exec(this.utilityDirectory, command)
+    ));
   }
 }

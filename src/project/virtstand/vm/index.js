@@ -1,8 +1,9 @@
-import { ensureDir, writeFile } from 'fs-extra';
+import { ensureDir, readFile, writeFile } from 'fs-extra';
 import { dirname, join } from 'path';
 import * as vagrant from 'node-vagrant';
-import { get } from 'lodash';
-import execa from 'execa';
+import { first, get } from 'lodash';
+import { spawn } from 'child_process';
+import SSH2Promise from 'ssh2-promise';
 import ConfigFile from '../../configFile';
 import Vagranfile from './vagrant/vagrantfile';
 import PluginManager from './vagrant/pluginManager';
@@ -86,5 +87,40 @@ export default class VirtualMachine {
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     const status = await machine.status();
     return get(status, 'default.status');
+  }
+
+  async ssh(targetDirectory) {
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
+    const machine = vagrant.create({ cwd: vmTargetDirectory });
+    const sshConfigs = await machine.sshConfig();
+    const sshConfig = first(sshConfigs);
+
+    spawn(
+      'ssh',
+      [`${sshConfig.hostname}`, '-l', sshConfig.user, '-p', sshConfig.port, '-i', sshConfig.private_key],
+      { stdio: [process.stdin, process.stdout, process.stderr] }
+    );
+  }
+
+  async exec(targetDirectory, command) {
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
+    const machine = vagrant.create({ cwd: vmTargetDirectory });
+    const sshConfigs = await machine.sshConfig();
+    const sshConfig = first(sshConfigs);
+
+    const ssh = new SSH2Promise({
+      username: sshConfig.user,
+      host: sshConfig.hostname,
+      port: sshConfig.port,
+      privateKey: await readFile(sshConfig.private_key),
+    });
+    try {
+      const result = await ssh.exec(command);
+      ssh.close();
+      return result;
+    } catch (error) {
+      ssh.close();
+      throw error.toString();
+    }
   }
 }

@@ -30,6 +30,7 @@ export default class Vagranfile {
           actimeo: 1
         },
       },
+      provision: [],
     };
   }
 

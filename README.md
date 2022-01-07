@@ -12,3 +12,8 @@ Under development...
 ## Requirements
 
 Vagrant >=2.2.19
+
+## Workarounds
+
+For absolute paths MSYS (windows shell) changes them.
+Use `MSYS_NO_PATHCONV=1` to avoid it.

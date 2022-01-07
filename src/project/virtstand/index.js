@@ -134,4 +134,17 @@ export default class Virtstand {
       async (virtualMachine) => virtualMachine.exec(this.utilityDirectory, command)
     ));
   }
+
+  async copy(names, direction, from, to) {
+    await Promise.all(map(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.copy(
+        this.utilityDirectory,
+        this.workingDirectory,
+        direction,
+        from,
+        to
+      )
+    ));
+  }
 }

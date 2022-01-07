@@ -1,9 +1,14 @@
 import { ensureDir, readFile, writeFile } from 'fs-extra';
-import { dirname, join } from 'path';
+import {
+  dirname, join, posix, relative, resolve, sep
+} from 'path';
 import * as vagrant from 'node-vagrant';
-import { first, get } from 'lodash';
+import {
+  first, get, includes, split
+} from 'lodash';
 import { spawn } from 'child_process';
 import SSH2Promise from 'ssh2-promise';
+import execa from 'execa';
 import ConfigFile from '../../configFile';
 import Vagranfile from './vagrant/vagrantfile';
 import PluginManager from './vagrant/pluginManager';
@@ -121,6 +126,32 @@ export default class VirtualMachine {
     } catch (error) {
       ssh.close();
       throw error.toString();
+    }
+  }
+
+  async copy(targetDirectory, projectPath, direction, from, to) {
+    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
+
+    const getRelativePath = (originalPath) => {
+      const resolvedPath = resolve(projectPath, originalPath);
+      const relativePath = relative(vmTargetDirectory, resolvedPath);
+      const posixRelativePath = split(relativePath, sep).join(posix.sep);
+      return posixRelativePath;
+    };
+
+    const pathFrom = direction === 'in' ? getRelativePath(from) : from;
+    const pathTo = direction === 'out' ? getRelativePath(to) : to;
+
+    const vmIn = direction === 'in' ? ':' : '';
+    const vmOut = direction === 'out' ? ':' : '';
+
+    const command = `vagrant scp ${vmOut}${pathFrom} ${vmIn}${pathTo}`;
+
+    const out = await execa.command(command, {
+      cwd: vmTargetDirectory
+    });
+    if (includes(out.stderr, 'No such file or directory')) {
+      throw out.stderr.toString();
     }
   }
 }

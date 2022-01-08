@@ -21,10 +21,12 @@ export const builder = yargs => yargs
   });
 
 export const handler = async argv => {
-  await run(argv.name, argv.stage);
+  await run(argv);
 };
 
-async function run(name, stage) {
+export async function run(argv) {
+  const { name, stage } = argv;
+
   const virtstand = new Virtstand();
   await virtstand.init('./', stage);
   if (isEmpty(name)) {

@@ -45,12 +45,16 @@ export const builder = yargs => yargs
 
 export const handler = async argv => {
   await compile(argv);
-  await run(argv.name, argv.direction, argv.from, argv.to);
+  await run(argv);
 };
 
-async function run(name, direction, from, to) {
+export async function run(argv) {
+  const {
+    name, stage, direction, from, to
+  } = argv;
+
   const virtstand = new Virtstand();
-  await virtstand.init('./');
+  await virtstand.init('./', stage);
   try {
     await virtstand.copy(name, direction, from, to);
     logSuccess(`Transferred the target between host and VM '${name}'.`);

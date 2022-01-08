@@ -23,11 +23,12 @@ export default class Vagranfile {
         customize: [],
       },
       synced_folder: {
-        type: 'nfs',
+        type: 'virtualbox',
         from: '../../data',
         to: '/vagrant',
         mount_options: {
-          actimeo: 1
+          dmode: 777,
+          fmode: 777,
         },
       },
       provision: [],

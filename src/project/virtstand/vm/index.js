@@ -59,8 +59,11 @@ export default class VirtualMachine {
 
   async start(targetDirectory) {
     const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
-    await machine.up('--no-provision');
+    const command = 'vagrant up --no-provision';
+
+    await execa.command(command, {
+      cwd: vmTargetDirectory,
+    });
   }
 
   async restart(targetDirectory) {

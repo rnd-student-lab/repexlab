@@ -25,12 +25,14 @@ export const builder = yargs => yargs
 export const handler = async argv => {
   // await compile(argv);
   await restart(argv);
-  await run(argv.name);
+  await run(argv);
 };
 
-async function run(name) {
+export async function run(argv) {
+  const { name, stage } = argv;
+
   const virtstand = new Virtstand();
-  await virtstand.init('./');
+  await virtstand.init('./', stage);
   if (isEmpty(name)) {
     await virtstand.provision();
     logSuccess('Provisioned all VMs');

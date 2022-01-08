@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { logError, logSuccess } from '../../utils/logger';
 import Virtstand from '../../project/virtstand';
 import { handler as compile } from './compile';
@@ -29,17 +30,27 @@ export const builder = yargs => yargs
 
 export const handler = async argv => {
   await compile(argv);
-  await run(argv.name, argv.command);
+  await run(argv);
 };
 
-async function run(name, cmd) {
+export async function run(argv) {
+  const { name, stage } = argv;
+
   const virtstand = new Virtstand();
-  await virtstand.init('./');
+  await virtstand.init('./', stage);
   try {
-    await virtstand.exec(name, cmd);
-    logSuccess(`Executed the command on VM '${name}'.`);
+    await virtstand.exec(name, argv.command);
+    if (isEmpty(name)) {
+      logSuccess('Executed the command on all VMs.');
+    } else {
+      logSuccess(`Executed the command on VM '${name}'.`);
+    }
   } catch (error) {
-    logError(`Failed to execute the command on VM '${name}'.`);
+    if (isEmpty(name)) {
+      logError('Failed to execute the command on all VMs');
+    } else {
+      logError(`Failed to execute the command on VM '${name}'.`);
+    }
     logError(error);
   }
 }

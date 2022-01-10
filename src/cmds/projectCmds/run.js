@@ -9,6 +9,7 @@ import { run as compile } from '../vmCmds/compile';
 import { run as copy } from '../vmCmds/copy';
 import { run as destroy } from '../vmCmds/destroy';
 import { run as exec } from '../vmCmds/exec';
+import { run as setupHosts } from '../vmCmds/setupHosts';
 import { run as provision } from '../vmCmds/provision';
 import { run as restart } from '../vmCmds/restart';
 import { run as start } from '../vmCmds/start';
@@ -46,6 +47,7 @@ async function run(argv) {
     copy,
     destroy,
     exec,
+    setupHosts,
     provision,
     restart,
     start,

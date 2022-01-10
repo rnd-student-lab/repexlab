@@ -95,6 +95,16 @@ export default class Virtstand {
     ));
   }
 
+  async setupHosts(names) {
+    await Promise.all(map(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.setupHosts(
+        this.utilityDirectory,
+        this.virtualMachines
+      )
+    ));
+  }
+
   async provision(names) {
     await Promise.all(map(
       this.getVMsByNames(names),

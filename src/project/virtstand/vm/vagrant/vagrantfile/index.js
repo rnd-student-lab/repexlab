@@ -35,13 +35,16 @@ export default class Vagranfile {
     };
   }
 
-  convertObject(config, stage, configDir, targetDir) {
+  compileConfigObject(config, stage) {
     let stageConfig = {};
     if (stage) {
       stageConfig = get(config, ['stage', stage]);
     }
+    return merge({}, this.defaults, config.defaults, stageConfig);
+  }
 
-    const vm = merge({}, this.defaults, config.defaults, stageConfig);
+  convertObject(config, stage, configDir, targetDir) {
+    const vm = this.compileConfigObject(config, stage);
     const vmWithUpdatedPaths = this.constructor.replacePaths(vm, configDir, targetDir);
     return this.template(vmWithUpdatedPaths);
   }

@@ -4,7 +4,7 @@ import {
 } from 'path';
 import * as vagrant from 'node-vagrant';
 import {
-  first, get, includes, split
+  first, get, includes, reduce, split
 } from 'lodash';
 import { spawn } from 'child_process';
 import SSH2Promise from 'ssh2-promise';
@@ -40,6 +40,10 @@ export default class VirtualMachine {
     return join(targetDirectory, this.utilityDirectoryName, this.name);
   }
 
+  getCompiledConfigObject() {
+    return this.vagrantfile.compileConfigObject(this.config, this.stage);
+  }
+
   async compile(targetDirectory) {
     const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const vmTargetPath = join(vmTargetDirectory, this.vagrantfileName);
@@ -70,6 +74,17 @@ export default class VirtualMachine {
     const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
     const machine = vagrant.create({ cwd: vmTargetDirectory });
     await machine.reload();
+  }
+
+  async setupHosts(targetDirectory, vms) {
+    await reduce(vms, async (acc, vm) => {
+      await acc;
+      const { ip } = vm.getCompiledConfigObject().provider.network;
+      const { hostname } = vm.getCompiledConfigObject().provider;
+      const entry = `'${ip} ${hostname}'`;
+      const command = `sudo bash -c "grep -qxF ${entry} /etc/hosts || echo ${entry} >> /etc/hosts"`;
+      await this.exec(targetDirectory, command);
+    }, Promise.resolve());
   }
 
   async provision(targetDirectory) {

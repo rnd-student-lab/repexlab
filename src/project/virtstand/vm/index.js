@@ -120,7 +120,10 @@ export default class VirtualMachine {
 
     spawn(
       'ssh',
-      [`${sshConfig.hostname}`, '-l', sshConfig.user, '-p', sshConfig.port, '-i', sshConfig.private_key],
+      [
+        sshConfig.hostname, '-l', sshConfig.user, '-p', sshConfig.port, '-i', sshConfig.private_key,
+        '-o', 'UserKnownHostsFile=/dev/null', '-o', 'StrictHostKeyChecking=no', '-q'
+      ],
       { stdio: [process.stdin, process.stdout, process.stderr] }
     );
   }

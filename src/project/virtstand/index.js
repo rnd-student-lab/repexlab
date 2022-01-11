@@ -11,11 +11,11 @@ import VirtualMachine from './vm';
 export default class Virtstand {
   constructor() {
     this.mainFileName = 'virtstand.yml';
-    this.utilityDirectoryName = '.virtstand';
+    this.virtstandDirectoryName = '.virtstand';
     this.config = null;
     this.filePath = null;
     this.workingDirectory = null;
-    this.utilityDirectory = null;
+    this.virtstandDirectory = null;
     this.stage = null;
 
     this.virtualMachines = [];
@@ -25,7 +25,7 @@ export default class Virtstand {
     this.filePath = await this.searchMainFile(dir);
     this.config = await ConfigFile.read(this.filePath);
     this.workingDirectory = dirname(this.filePath);
-    this.utilityDirectory = join(this.workingDirectory, this.utilityDirectoryName);
+    this.virtstandDirectory = join(this.workingDirectory, this.virtstandDirectoryName);
     this.stage = stage;
 
     await this.initVirtualMachines();
@@ -37,7 +37,8 @@ export default class Virtstand {
       await virtualMachine.init(
         join(this.workingDirectory, declaration.path),
         this.stage,
-        declaration.name
+        declaration.name,
+        this.virtstandDirectory
       );
       return virtualMachine;
     }));
@@ -77,21 +78,21 @@ export default class Virtstand {
   async compile(names) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.compile(this.utilityDirectory)
+      async (virtualMachine) => virtualMachine.compile()
     ));
   }
 
   async start(names) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.start(this.utilityDirectory)
+      async (virtualMachine) => virtualMachine.start()
     ));
   }
 
   async restart(names) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.restart(this.utilityDirectory)
+      async (virtualMachine) => virtualMachine.restart()
     ));
   }
 
@@ -99,7 +100,6 @@ export default class Virtstand {
     await Promise.all(map(
       this.getVMsByNames(names),
       async (virtualMachine) => virtualMachine.setupHosts(
-        this.utilityDirectory,
         this.virtualMachines
       )
     ));
@@ -108,40 +108,40 @@ export default class Virtstand {
   async provision(names) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.provision(this.utilityDirectory)
+      async (virtualMachine) => virtualMachine.provision()
     ));
   }
 
   async stop(names) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.stop(this.utilityDirectory)
+      async (virtualMachine) => virtualMachine.stop()
     ));
   }
 
   async destroy(names) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.destroy(this.utilityDirectory)
+      async (virtualMachine) => virtualMachine.destroy()
     ));
   }
 
   async status(names) {
     return Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
-      const status = await virtualMachine.status(this.utilityDirectory);
+      const status = await virtualMachine.status();
       return `${virtualMachine.name}: ${status}`;
     }));
   }
 
   async ssh(names) {
     const virtualMachine = first(this.getVMsByNames(names));
-    await virtualMachine.ssh(this.utilityDirectory);
+    await virtualMachine.ssh();
   }
 
   async exec(names, command) {
     await Promise.all(map(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.exec(this.utilityDirectory, command)
+      async (virtualMachine) => virtualMachine.exec(command)
     ));
   }
 
@@ -149,7 +149,6 @@ export default class Virtstand {
     await Promise.all(map(
       this.getVMsByNames(names),
       async (virtualMachine) => virtualMachine.copy(
-        this.utilityDirectory,
         this.workingDirectory,
         direction,
         from,

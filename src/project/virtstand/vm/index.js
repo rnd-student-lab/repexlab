@@ -23,98 +23,93 @@ export default class VirtualMachine {
     this.config = null;
     this.filePath = null;
     this.workingDirectory = null;
+    this.virtstandDirectory = null;
+    this.compilationTargetDirectory = null;
     this.name = null;
     this.stage = null;
     this.vagrantfile = new Vagranfile();
   }
 
-  async init(path, stage, name) {
+  async init(path, stage, name, virtstandDirectory) {
     this.filePath = join(path, this.mainFileName);
     this.config = await ConfigFile.read(this.filePath);
     this.workingDirectory = dirname(this.filePath);
     this.name = name;
     this.stage = stage;
-  }
-
-  getVMTargetDirectory(targetDirectory) {
-    return join(targetDirectory, this.utilityDirectoryName, this.name);
+    this.virtstandDirectory = virtstandDirectory;
+    this.compilationTargetDirectory = join(
+      this.virtstandDirectory,
+      this.utilityDirectoryName,
+      this.name
+    );
   }
 
   getCompiledConfigObject() {
     return this.vagrantfile.compileConfigObject(this.config, this.stage);
   }
 
-  async compile(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const vmTargetPath = join(vmTargetDirectory, this.vagrantfileName);
+  async compile() {
+    const vmTargetPath = join(this.compilationTargetDirectory, this.vagrantfileName);
     const output = this.vagrantfile.convertObject(
       this.config,
       this.stage,
       this.workingDirectory,
-      vmTargetDirectory
+      this.compilationTargetDirectory
     );
 
-    await ensureDir(vmTargetDirectory);
+    await ensureDir(this.compilationTargetDirectory);
     await writeFile(vmTargetPath, output);
 
-    const pluginManager = new PluginManager(vmTargetDirectory);
+    const pluginManager = new PluginManager(this.compilationTargetDirectory);
     await pluginManager.ensurePlugins();
   }
 
-  async start(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
+  async start() {
     const command = 'vagrant up --no-provision';
-
     await execa.command(command, {
-      cwd: vmTargetDirectory,
+      cwd: this.compilationTargetDirectory,
     });
   }
 
-  async restart(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async restart() {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     await machine.reload();
   }
 
-  async setupHosts(targetDirectory, vms) {
+  async setupHosts(vms) {
     await reduce(vms, async (acc, vm) => {
       await acc;
       const { ip } = vm.getCompiledConfigObject().provider.network;
       const { hostname } = vm.getCompiledConfigObject().provider;
       const entry = `'${ip} ${hostname}'`;
       const command = `sudo bash -c "grep -qxF ${entry} /etc/hosts || echo ${entry} >> /etc/hosts"`;
-      await this.exec(targetDirectory, command);
+      await this.exec(command);
     }, Promise.resolve());
   }
 
-  async provision(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async provision() {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     await machine.provision();
   }
 
-  async stop(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async stop() {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     await machine.halt();
   }
 
-  async destroy(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async destroy() {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     await machine.destroy();
   }
 
-  async status(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async status() {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     const status = await machine.status();
     return get(status, 'default.status');
   }
 
-  async ssh(targetDirectory) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async ssh() {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     const sshConfigs = await machine.sshConfig();
     const sshConfig = first(sshConfigs);
 
@@ -128,9 +123,8 @@ export default class VirtualMachine {
     );
   }
 
-  async exec(targetDirectory, command) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-    const machine = vagrant.create({ cwd: vmTargetDirectory });
+  async exec(command) {
+    const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     const sshConfigs = await machine.sshConfig();
     const sshConfig = first(sshConfigs);
 
@@ -150,12 +144,10 @@ export default class VirtualMachine {
     }
   }
 
-  async copy(targetDirectory, projectPath, direction, from, to) {
-    const vmTargetDirectory = this.getVMTargetDirectory(targetDirectory);
-
+  async copy(projectPath, direction, from, to) {
     const getRelativePath = (originalPath) => {
       const resolvedPath = resolve(projectPath, originalPath);
-      const relativePath = relative(vmTargetDirectory, resolvedPath);
+      const relativePath = relative(this.compilationTargetDirectory, resolvedPath);
       const posixRelativePath = split(relativePath, sep).join(posix.sep);
       return posixRelativePath;
     };
@@ -169,7 +161,7 @@ export default class VirtualMachine {
     const command = `vagrant scp ${vmOut}${pathFrom} ${vmIn}${pathTo}`;
 
     const out = await execa.command(command, {
-      cwd: vmTargetDirectory
+      cwd: this.compilationTargetDirectory
     });
     if (includes(out.stderr, 'No such file or directory')) {
       throw out.stderr.toString();

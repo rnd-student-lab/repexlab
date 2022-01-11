@@ -36,6 +36,6 @@ export async function run(argv) {
     logSuccess('Destroyed all VMs');
   } else {
     await virtstand.destroy(name);
-    logSuccess(`Destroyed VM '${name}'.`);
+    logSuccess(`Destroyed VM '${name}'`);
   }
 }

@@ -36,6 +36,6 @@ export async function run(argv) {
     logSuccess('Done /etc/hosts setup for all VMs');
   } else {
     await virtstand.setupHosts(name);
-    logSuccess(`Done /etc/hosts setup for VM '${name}'.`);
+    logSuccess(`Done /etc/hosts setup for VM '${name}'`);
   }
 }

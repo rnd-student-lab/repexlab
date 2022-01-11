@@ -36,6 +36,6 @@ export async function run(argv) {
     logSuccess('Stopped all VMs');
   } else {
     await virtstand.stop(name);
-    logSuccess(`Stopped VM '${name}'.`);
+    logSuccess(`Stopped VM '${name}'`);
   }
 }

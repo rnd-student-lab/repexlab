@@ -43,13 +43,13 @@ export async function run(argv) {
     if (isEmpty(name)) {
       logSuccess('Executed the command on all VMs.');
     } else {
-      logSuccess(`Executed the command on VM '${name}'.`);
+      logSuccess(`Executed the command on VM '${name}'`);
     }
   } catch (error) {
     if (isEmpty(name)) {
       logError('Failed to execute the command on all VMs');
     } else {
-      logError(`Failed to execute the command on VM '${name}'.`);
+      logError(`Failed to execute the command on VM '${name}'`);
     }
     logError(error);
   }

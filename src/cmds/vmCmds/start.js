@@ -36,6 +36,6 @@ export async function run(argv) {
     logSuccess('Started all VMs');
   } else {
     await virtstand.start(name);
-    logSuccess(`Started VM '${name}'.`);
+    logSuccess(`Started VM '${name}'`);
   }
 }

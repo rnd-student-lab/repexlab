@@ -30,14 +30,14 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
   if (isEmpty(name)) {
-    const statuses = await virtstand.status();
+    const statuses = await virtstand.operations.status();
     logSuccess('VMs statuses:');
     logInfo(stringify(statuses));
   } else {
-    const statuses = await virtstand.status(name);
+    const statuses = await virtstand.operations.status(name);
     logSuccess(`VM '${name}' status:`);
     logInfo(stringify(statuses));
   }

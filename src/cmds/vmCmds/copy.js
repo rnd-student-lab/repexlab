@@ -53,10 +53,10 @@ export async function run(argv) {
     name, stage, direction, from, to
   } = argv;
 
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
   try {
-    await virtstand.copy(name, direction, from, to);
+    await virtstand.operations.copy(name, direction, from, to);
     logSuccess(`Transferred the target between host and VM '${name}'`);
   } catch (error) {
     logError(`Failed to transfer the target between host and VM '${name}'`);

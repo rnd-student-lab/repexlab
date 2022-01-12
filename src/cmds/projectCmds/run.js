@@ -34,7 +34,7 @@ async function run(argv) {
   const { stage } = argv;
   const commonVirtstand = new Virtstand();
   await commonVirtstand.init('./');
-  const allStages = cloneDeep(commonVirtstand.config.stages);
+  const allStages = cloneDeep(commonVirtstand.config.getStages());
 
   const stageNames = compact(castArray(stage));
   const stages = filter(

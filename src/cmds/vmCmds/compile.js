@@ -27,13 +27,13 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
   if (isEmpty(name)) {
-    await virtstand.compile();
+    await virtstand.operations.compile();
     logSuccess('Compiled all VMs');
   } else {
-    await virtstand.compile(name);
+    await virtstand.operations.compile(name);
     logSuccess(`Compiled VM '${name}'`);
   }
 }

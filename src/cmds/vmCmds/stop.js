@@ -29,13 +29,13 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
   if (isEmpty(name)) {
-    await virtstand.stop();
+    await virtstand.operations.stop();
     logSuccess('Stopped all VMs');
   } else {
-    await virtstand.stop(name);
+    await virtstand.operations.stop(name);
     logSuccess(`Stopped VM '${name}'`);
   }
 }

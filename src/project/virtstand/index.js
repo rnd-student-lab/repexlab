@@ -1,45 +1,75 @@
-import { pathExists } from 'fs-extra';
 import {
-  castArray, compact, filter, first, includes, isEmpty, map, range, reduce, split, take
+  ensureDir, pathExists, remove, writeFile
+} from 'fs-extra';
+import {
+  isEmpty, map, range, reduce, split, take
 } from 'lodash';
 import {
   resolve, sep, join, dirname
 } from 'path';
-import ConfigFile from '../configFile';
+import VirtstandConfig from './config';
+import VirtstandOperations from './operations';
 import VirtualMachine from './vm';
 
+import gitignoreTpl from '../projectTemplate/gitignore';
+import commonProvisionTpl from '../projectTemplate/provision/common/provision';
+import dataGitkeepTpl from '../projectTemplate/data/gitkeep';
+
 export default class Virtstand {
-  constructor() {
+  constructor(stage) {
     this.mainFileName = 'virtstand.yml';
     this.virtstandDirectoryName = '.virtstand';
-    this.config = null;
     this.filePath = null;
     this.workingDirectory = null;
     this.virtstandDirectory = null;
-    this.stage = null;
-
-    this.virtualMachines = [];
-  }
-
-  async init(dir, stage) {
-    this.filePath = await this.searchMainFile(dir);
-    this.config = await ConfigFile.read(this.filePath);
-    this.workingDirectory = dirname(this.filePath);
-    this.virtstandDirectory = join(this.workingDirectory, this.virtstandDirectoryName);
     this.stage = stage;
 
+    this.virtualMachines = [];
+    this.config = new VirtstandConfig();
+    this.operations = null;
+  }
+
+  async createDefaultProjectFiles() {
+    await ensureDir(join(this.workingDirectory, 'provision/common'));
+    await ensureDir(join(this.workingDirectory, 'data'));
+
+    await writeFile(join(this.workingDirectory, '.gitignore'), gitignoreTpl);
+    await writeFile(join(this.workingDirectory, 'provision/common/provision.yml'), commonProvisionTpl);
+    await writeFile(join(this.workingDirectory, 'data/.gitkeep'), dataGitkeepTpl);
+  }
+
+  async create(dir) {
+    this.filePath = join(dir, this.mainFileName);
+    this.workingDirectory = dirname(this.filePath);
+    this.virtstandDirectory = join(this.workingDirectory, this.virtstandDirectoryName);
+
+    await this.config.create();
+    await this.config.save(this.filePath);
+    await this.createDefaultProjectFiles();
+
     await this.initVirtualMachines();
+    this.operations = new VirtstandOperations(this.workingDirectory, this.virtualMachines);
+  }
+
+  async init(dir) {
+    this.filePath = await this.searchMainFile(dir);
+    this.workingDirectory = dirname(this.filePath);
+    this.virtstandDirectory = join(this.workingDirectory, this.virtstandDirectoryName);
+
+    await this.config.init(this.filePath);
+    await this.initVirtualMachines();
+    this.operations = new VirtstandOperations(this.workingDirectory, this.virtualMachines);
   }
 
   async initVirtualMachines() {
-    this.virtualMachines = await Promise.all(map(this.config.vms, async (declaration) => {
-      const virtualMachine = new VirtualMachine();
-      await virtualMachine.init(
+    this.virtualMachines = await Promise.all(map(this.config.getVMs(), async (declaration) => {
+      const virtualMachine = new VirtualMachine(
         join(this.workingDirectory, declaration.path),
-        this.stage,
         declaration.name,
-        this.virtstandDirectory
+        this.virtstandDirectory,
+        this.stage
       );
+      await virtualMachine.init();
       return virtualMachine;
     }));
   }
@@ -66,94 +96,25 @@ export default class Virtstand {
     return path;
   }
 
-  getVMsByNames(names) {
-    const vmNames = compact(castArray(names));
-    const vms = filter(
-      this.virtualMachines,
-      (vm) => isEmpty(names) || (includes(vmNames, vm.name))
+  async addVM(name, path, config) {
+    const virtualMachine = new VirtualMachine(
+      join(this.workingDirectory, path),
+      name,
+      this.virtstandDirectory,
+      this.stage
     );
-    return vms;
+    await virtualMachine.create(config);
+
+    this.config.addVM(name, path);
+    this.virtualMachines.push(virtualMachine);
+    await this.config.save(this.filePath);
   }
 
-  async compile(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.compile()
-    ));
-  }
-
-  async start(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.start()
-    ));
-  }
-
-  async restart(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.restart()
-    ));
-  }
-
-  async setupHosts(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.setupHosts(
-        this.virtualMachines
-      )
-    ));
-  }
-
-  async provision(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.provision()
-    ));
-  }
-
-  async stop(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.stop()
-    ));
-  }
-
-  async destroy(names) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.destroy()
-    ));
-  }
-
-  async status(names) {
-    return Promise.all(map(this.getVMsByNames(names), async (virtualMachine) => {
-      const status = await virtualMachine.status();
-      return `${virtualMachine.name}: ${status}`;
-    }));
-  }
-
-  async ssh(names) {
-    const virtualMachine = first(this.getVMsByNames(names));
-    await virtualMachine.ssh();
-  }
-
-  async exec(names, command) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.exec(command)
-    ));
-  }
-
-  async copy(names, direction, from, to) {
-    await Promise.all(map(
-      this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.copy(
-        this.workingDirectory,
-        direction,
-        from,
-        to
-      )
-    ));
+  async removeVM(name) {
+    const vm = this.config.getVM(name);
+    this.config.removeVM(name);
+    await remove(vm.path);
+    await this.config.save(this.filePath);
+    await this.initVirtualMachines();
   }
 }

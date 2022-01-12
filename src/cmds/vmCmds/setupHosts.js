@@ -29,13 +29,13 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
   if (isEmpty(name)) {
-    await virtstand.setupHosts();
+    await virtstand.operations.setupHosts();
     logSuccess('Done /etc/hosts setup for all VMs');
   } else {
-    await virtstand.setupHosts(name);
+    await virtstand.operations.setupHosts(name);
     logSuccess(`Done /etc/hosts setup for VM '${name}'`);
   }
 }

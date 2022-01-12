@@ -36,10 +36,10 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
   try {
-    await virtstand.exec(name, argv.command);
+    await virtstand.operations.exec(name, argv.command);
     if (isEmpty(name)) {
       logSuccess('Executed the command on all VMs.');
     } else {

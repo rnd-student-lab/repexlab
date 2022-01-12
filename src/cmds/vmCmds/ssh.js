@@ -17,7 +17,7 @@ export const handler = async argv => {
 
 export async function run(argv) {
   const { name, stage } = argv;
-  const virtstand = new Virtstand();
-  await virtstand.init('./', stage);
-  await virtstand.ssh(name);
+  const virtstand = new Virtstand(stage);
+  await virtstand.init('./');
+  await virtstand.operations.ssh(name);
 }

@@ -1,6 +1,4 @@
-import {
-  cloneDeep, get, has, merge, set
-} from 'lodash';
+import { has, merge, set } from 'lodash';
 import ConfigFile from '../../configFile';
 
 export default class VirtualMachineConfig {
@@ -19,6 +17,15 @@ export default class VirtualMachineConfig {
           network: {
             type: 'private_network',
             ip: '192.168.123.123'
+          },
+          synced_folder: {
+            type: 'virtualbox',
+            from: '../../data',
+            to: '/vagrant',
+            mount_options: {
+              dmode: 777,
+              fmode: 777,
+            },
           },
           customize: [
             [

@@ -11,9 +11,9 @@ import VirtstandConfig from './config';
 import VirtstandOperations from './operations';
 import VirtualMachine from './vm';
 
-import gitignoreTpl from '../projectTemplate/gitignore';
-import commonProvisionTpl from '../projectTemplate/provision/common/provision';
-import dataGitkeepTpl from '../projectTemplate/data/gitkeep';
+import gitignoreTpl from '../templates/projectTemplates/gitignore';
+import commonProvisionTpl from '../templates/projectTemplates/provision/common/provision';
+import dataGitkeepTpl from '../templates/projectTemplates/data/gitkeep';
 
 export default class Virtstand {
   constructor(stage) {

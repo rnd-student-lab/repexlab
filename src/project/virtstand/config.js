@@ -1,5 +1,5 @@
 import {
-  cloneDeep, filter, find, merge, some
+  filter, find, merge, some
 } from 'lodash';
 import ConfigFile from '../configFile';
 
@@ -10,7 +10,34 @@ export default class VirtstandConfig {
       vms: [
       ],
       stages: [
-      ]
+        {
+          name: 'beginning',
+          actions: [
+            {
+              command: 'start',
+              description: 'Starting VMs',
+            },
+          ],
+        },
+        {
+          name: 'main',
+          actions: [
+            {
+              command: 'provision',
+              description: 'Run provisioning scripts on all VMs',
+            },
+          ],
+        },
+        {
+          name: 'ending',
+          actions: [
+            {
+              command: 'stop',
+              description: 'Stopping VMs',
+            },
+          ],
+        },
+      ],
     };
 
     this.config = null;
@@ -29,7 +56,7 @@ export default class VirtstandConfig {
   }
 
   getConfigObject() {
-    return cloneDeep(this.config);
+    return this.config;
   }
 
   hasVM(name) {
@@ -56,6 +83,6 @@ export default class VirtstandConfig {
   }
 
   getStages() {
-    return cloneDeep(this.config.stages);
+    return this.config.stages;
   }
 }

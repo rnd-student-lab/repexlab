@@ -8,6 +8,8 @@ import PluginManager from './vagrant/pluginManager';
 import VirtualMachineOperations from './operations';
 import VirtualMachineConfig from './config';
 
+import provisionTpl from '../../templates/vmTemplates/provision/provision';
+
 export default class VirtualMachine {
   constructor(path, name, virtstandDirectory, stage) {
     this.utilityDirectoryName = 'vm';
@@ -31,9 +33,16 @@ export default class VirtualMachine {
     this.config = new VirtualMachineConfig();
   }
 
+  async createDefaultProjectFiles() {
+    await ensureDir(join(this.workingDirectory, 'provision'));
+
+    await writeFile(join(this.workingDirectory, 'provision/provision.yml'), provisionTpl);
+  }
+
   async create(config) {
     await this.config.create(config);
     await this.config.save(this.filePath);
+    await this.createDefaultProjectFiles();
   }
 
   async init() {

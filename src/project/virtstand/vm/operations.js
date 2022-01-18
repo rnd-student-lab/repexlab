@@ -1,14 +1,17 @@
-import { readFile } from 'fs-extra';
+import { ensureDir, readFile, writeFile } from 'fs-extra';
 import {
+  join,
   posix, relative, resolve, sep
 } from 'path';
 import * as vagrant from 'node-vagrant';
 import {
-  first, get, includes, reduce, split
+  compact,
+  first, get, includes, reduce, split, trim
 } from 'lodash';
 import { spawn } from 'child_process';
 import SSH2Promise from 'ssh2-promise';
 import execa from 'execa';
+import moment from 'moment';
 
 vagrant.promisify();
 
@@ -95,6 +98,31 @@ export default class VirtualMachineOperations {
       ssh.close();
       throw error.toString();
     }
+  }
+
+  async report(destination, start, end, labels) {
+    const utcOffset = trim(await this.exec('date +"%:z"'));
+
+    const mStart = moment(start, 'HH:mm:ss').utcOffset(utcOffset).format('HH:mm:ss');
+    const mEnd = moment(end, 'HH:mm:ss').utcOffset(utcOffset).format('HH:mm:ss');
+
+    console.log(mStart, mEnd);
+
+    await reduce(labels, async (acc, label) => {
+      await acc;
+
+      const command = `atop -b ${mStart} -e ${mEnd} -r \${atop_log} -P ${label}`;
+      const atopLog = trim(await this.exec(command));
+
+      const dsv = compact(split(atopLog, 'SEP')
+        .join('')
+        .split('RESET')
+        .join('')
+        .split('\n')).join('\n');
+
+      await ensureDir(destination);
+      await writeFile(join(destination, `${label}.csv`), dsv);
+    }, Promise.resolve());
   }
 
   async copy(projectPath, direction, from, to) {

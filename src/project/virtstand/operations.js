@@ -1,6 +1,7 @@
 import {
   castArray, compact, filter, first, includes, isEmpty, map,
 } from 'lodash';
+import { join } from 'path';
 
 export default class VirtstandOperations {
   constructor(workingDirectory, virtualMachines) {
@@ -88,6 +89,16 @@ export default class VirtstandOperations {
     await Promise.all(map(
       this.getVMsByNames(names),
       async (virtualMachine) => virtualMachine.operations.exec(command)
+    ));
+  }
+
+  async report(names, timestamp, start, end, labels) {
+    await Promise.all(map(
+      this.getVMsByNames(names),
+      async (virtualMachine) => {
+        const destination = join(this.workingDirectory, `reports/${timestamp}/${virtualMachine.name}`);
+        return virtualMachine.operations.report(destination, start, end, labels);
+      }
     ));
   }
 

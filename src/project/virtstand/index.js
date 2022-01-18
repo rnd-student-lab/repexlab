@@ -14,6 +14,7 @@ import VirtualMachine from './vm';
 import gitignoreTpl from '../templates/projectTemplates/gitignore';
 import commonProvisionTpl from '../templates/projectTemplates/provision/common/provision';
 import dataGitkeepTpl from '../templates/projectTemplates/data/gitkeep';
+import reportsGitkeepTpl from '../templates/projectTemplates/reports/gitkeep';
 
 export default class Virtstand {
   constructor(stage) {
@@ -32,10 +33,12 @@ export default class Virtstand {
   async createDefaultProjectFiles() {
     await ensureDir(join(this.workingDirectory, 'provision/common'));
     await ensureDir(join(this.workingDirectory, 'data'));
+    await ensureDir(join(this.workingDirectory, 'reports'));
 
     await writeFile(join(this.workingDirectory, '.gitignore'), gitignoreTpl);
     await writeFile(join(this.workingDirectory, 'provision/common/provision.yml'), commonProvisionTpl);
     await writeFile(join(this.workingDirectory, 'data/.gitkeep'), dataGitkeepTpl);
+    await writeFile(join(this.workingDirectory, 'reports/.gitkeep'), reportsGitkeepTpl);
   }
 
   async create(dir) {

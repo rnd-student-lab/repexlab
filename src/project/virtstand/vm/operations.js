@@ -106,8 +106,6 @@ export default class VirtualMachineOperations {
     const mStart = moment(start, 'HH:mm:ss').utcOffset(utcOffset).format('HH:mm:ss');
     const mEnd = moment(end, 'HH:mm:ss').utcOffset(utcOffset).format('HH:mm:ss');
 
-    console.log(mStart, mEnd);
-
     await reduce(labels, async (acc, label) => {
       await acc;
 

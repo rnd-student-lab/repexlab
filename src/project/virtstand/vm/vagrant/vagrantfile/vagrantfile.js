@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     v.cpus = <%= provider.cpus %>
 
     <% for (let i in provider.customize) { %>
-    v.customize ["<%= provider.customize[i][0] %>", <%= provider.customize[i][1] %>, "<%= provider.customize[i][2] %>", "<%= provider.customize[i][3] %>"]
+    v.customize [<%- provider.customize[i].join(', ') %>]
     <% } %>
   end
   config.vm.hostname = "<%= provider.hostname %>"

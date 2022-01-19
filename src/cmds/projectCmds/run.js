@@ -14,6 +14,8 @@ import { run as provision } from '../vmCmds/provision';
 import { run as restart } from '../vmCmds/restart';
 import { run as start } from '../vmCmds/start';
 import { run as stop } from '../vmCmds/stop';
+import { run as report } from '../vmCmds/report';
+import VirtstandStageTimer from '../../project/virtstand/stageTimer';
 
 export const command = 'run';
 export const desc = 'Run the entire experiment';
@@ -52,18 +54,26 @@ async function run(argv) {
     restart,
     start,
     stop,
+    report,
   };
+
+  const stageTimer = new VirtstandStageTimer();
 
   await reduce(stages, async (stageAcc, stageItem) => {
     await stageAcc;
     logInfo(`Starting stage "${stageItem.name}"`);
+    stageTimer.set(stageItem.name, 'start');
     await availableActions.compile({ stage: stageItem.name }); // Compile all VMs every stage
     await reduce(stageItem.actions, async (actionsAcc, action) => {
       await actionsAcc;
       if (availableActions[action.command]) {
-        await availableActions[action.command](merge({ name: action.vms }, action.options));
+        await availableActions[action.command](
+          merge({ name: action.vms }, action.options),
+          stageTimer
+        );
       }
     }, Promise.resolve());
+    stageTimer.set(stageItem.name, 'end');
     logInfo(`Finishing stage "${stageItem.name}"`);
   }, Promise.resolve());
 }

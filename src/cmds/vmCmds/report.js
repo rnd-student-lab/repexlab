@@ -24,7 +24,7 @@ export const builder = yargs => yargs
     string: true,
     describe: 'Timespan end time (or end stage name for task automation)',
     requiresArg: true,
-    required: true,
+    required: false,
   })
   .option('labels', {
     alias: 'l',
@@ -47,7 +47,7 @@ export const handler = async argv => {
   await run(argv);
 };
 
-export async function run(argv) {
+export async function run(argv, stageTimer) {
   const {
     name, stage, start, end, labels
   } = argv;
@@ -55,20 +55,32 @@ export async function run(argv) {
   const virtstand = new Virtstand(stage);
   await virtstand.init('./');
 
-  const timestamp = moment();
-  // try {
-  await virtstand.operations.report(name, timestamp.unix(), start, end, labels);
-  //   if (isEmpty(name)) {
-  //     logSuccess('Executed the command on all VMs.');
-  //   } else {
-  //     logSuccess(`Executed the command on VM '${name}'`);
-  //   }
-  // } catch (error) {
-  //   if (isEmpty(name)) {
-  //     logError('Failed to execute the command on all VMs');
-  //   } else {
-  //     logError(`Failed to execute the command on VM '${name}'`);
-  //   }
-  //   logError(error);
-  // }
+  const now = moment();
+  let startTime;
+  let endTime;
+
+  if (stageTimer) { // Running inside the task automation
+    startTime = stageTimer.get(start, 'start').format('HH:mm:ss');
+    endTime = end ? stageTimer.get(end, 'end').format('HH:mm:ss') : now.format('HH:mm:ss');
+  } else { // Running inside CLI call
+    startTime = start;
+    endTime = end || now.format('HH:mm:ss');
+  }
+
+  try {
+    await virtstand.operations.report(name, now.unix(), startTime, endTime, labels);
+
+    if (isEmpty(name)) {
+      logSuccess('Created reports on all VMs.');
+    } else {
+      logSuccess(`Created a report on VM '${name}'`);
+    }
+  } catch (error) {
+    if (isEmpty(name)) {
+      logError('Failed to create reports on all VMs');
+    } else {
+      logError(`Failed to create a report on VM '${name}'`);
+    }
+    logError(error);
+  }
 }

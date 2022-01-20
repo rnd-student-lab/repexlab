@@ -1,0 +1,25 @@
+export const PROCESS_GENERAL = 'PRG';
+
+export const PROCESS_GENERAL_FIELDS = [
+  'PID',
+  'name (between brackets)',
+  'state',
+  'real uid',
+  'real gid',
+  'TGID (same as PID)',
+  'total number of threads',
+  'exit code',
+  'start time (epoch)',
+  'full command line (between brackets)',
+  'PPID',
+  "number of threads in state 'running' (R)",
+  "number of threads in state 'interruptible sleeping' (S)",
+  "number of threads in state 'uninterruptible sleeping' (D)",
+  'effective uid',
+  'effective gid',
+  'saved uid',
+  'saved gid',
+  'filesystem uid',
+  'filesystem gid',
+  'elapsed time (hertz)',
+];

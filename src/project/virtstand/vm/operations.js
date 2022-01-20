@@ -1,17 +1,19 @@
-import { ensureDir, readFile, writeFile } from 'fs-extra';
+import {
+  ensureDir, readFile, writeFile, writeJSON
+} from 'fs-extra';
 import {
   join,
   posix, relative, resolve, sep
 } from 'path';
 import * as vagrant from 'node-vagrant';
 import {
-  compact,
   first, get, includes, reduce, split, trim
 } from 'lodash';
 import { spawn } from 'child_process';
 import SSH2Promise from 'ssh2-promise';
 import execa from 'execa';
 import moment from 'moment';
+import AtopParser from '../../../report/atopParser';
 
 vagrant.promisify();
 
@@ -112,14 +114,13 @@ export default class VirtualMachineOperations {
       const command = `atop -b ${mStart} -e ${mEnd} -r \${atop_log} -P ${label}`;
       const atopLog = trim(await this.exec(command));
 
-      const dsv = compact(split(atopLog, 'SEP')
-        .join('')
-        .split('RESET')
-        .join('')
-        .split('\n')).join('\n');
+      const atopParser = new AtopParser(atopLog);
+      const dsv = atopParser.getDSV();
+      const parsed = atopParser.getMonitoringDataByLabel(label);
 
       await ensureDir(destination);
       await writeFile(join(destination, `${label}.csv`), dsv);
+      await writeJSON(join(destination, `${label}.json`), parsed, { spaces: 2 });
     }, Promise.resolve());
   }
 

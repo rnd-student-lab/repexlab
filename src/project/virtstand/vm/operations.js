@@ -14,6 +14,7 @@ import SSH2Promise from 'ssh2-promise';
 import execa from 'execa';
 import moment from 'moment';
 import AtopParser from '../../../report/atopParser';
+import ReportHTML from '../../../report/html';
 
 vagrant.promisify();
 
@@ -118,9 +119,17 @@ export default class VirtualMachineOperations {
       const dsv = atopParser.getDSV();
       const parsed = atopParser.getMonitoringDataByLabel(label);
 
+      const htmlReport = new ReportHTML(
+        parsed,
+        atopParser.getFieldsByLabel(label),
+        moment(start, 'HH:mm:ss'),
+        moment(end, 'HH:mm:ss')
+      );
+
       await ensureDir(destination);
       await writeFile(join(destination, `${label}.csv`), dsv);
       await writeJSON(join(destination, `${label}.json`), parsed, { spaces: 2 });
+      await writeFile(join(destination, `${label}.html`), htmlReport.buildReport(`Report on "${label}"`));
     }, Promise.resolve());
   }
 

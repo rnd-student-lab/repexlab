@@ -14,8 +14,13 @@ Under development...
 * Virtualbox >=6.1.30
 * Vagrant >=2.2.19
 * Node.JS >=14.5.0
+* NPM >=6.14.5
 
 ## Workarounds
 
 For absolute paths MSYS (windows shell) changes them.
 Use `MSYS_NO_PATHCONV=1` to avoid it.
+
+## License
+
+MIT © Dmitry Ilin

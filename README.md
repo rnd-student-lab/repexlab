@@ -11,7 +11,9 @@ Under development...
 
 ## Requirements
 
-Vagrant >=2.2.19
+* Virtualbox >=6.1.30
+* Vagrant >=2.2.19
+* Node.JS >=14.5.0
 
 ## Workarounds
 

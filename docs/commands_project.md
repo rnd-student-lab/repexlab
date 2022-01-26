@@ -3,11 +3,11 @@
 ## Additional documentation
 
 This document is the Virtstand Project commands reference. There are more documentation files in
-[`docs` in the Virtstand source tree](../):
+[`docs` in the Virtstand source tree](./):
 
-- [Virtual Machine commands](../commands_vm.md)
-- [Project commands](../commands_project.md)
-- [Examples](../examples.md)
+- [Virtual Machine commands](./commands_vm.md)
+- [Project commands](./commands_project.md)
+- [Examples](./examples.md)
 
 ## Commands
 

@@ -3,10 +3,11 @@
 ## Additional documentation
 
 This document is the Virtstand Virtual Machine commands reference. There are more documentation files in
-[`docs` in the Virtstand source tree](https://github.com/rnd-student-lab/virtstand/tree/master/docs):
+[`docs` in the Virtstand source tree](../):
 
-- [Virtual Machine commands](https://github.com/rnd-student-lab/virtstand/blob/master/docs/commands_vm.md)
-- [Examples](https://github.com/rnd-student-lab/virtstand/blob/master/docs/examples.md)
+- [Virtual Machine commands](../commands_vm.md)
+- [Project commands](../commands_project.md)
+- [Examples](../examples.md)
 
 ## Commands
 

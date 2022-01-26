@@ -16,6 +16,14 @@ Under development...
 * Node.JS >=14.5.0
 * NPM >=6.14.5
 
+## Documentation
+
+### Table of contents
+
+* [Virtual Machine commands](/docs/commands_vm.md)
+* [Project commands](/docs/commands_project.md)
+* [Examples](/docs/examples.md)
+
 ## Workarounds
 
 For absolute paths MSYS (windows shell) changes them.

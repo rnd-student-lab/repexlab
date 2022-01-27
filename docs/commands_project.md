@@ -8,6 +8,7 @@ This document is the Virtstand Project commands reference. There are more docume
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)
 - [Examples](./examples.md)
+- [Known issues](./known_issues.md)
 
 ## Commands
 

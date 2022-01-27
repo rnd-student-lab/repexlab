@@ -2,12 +2,9 @@
 
 Under development...
 
-## Development
+## Installation
 
-* clone repo
-* `npm install`
-* either run `npm run build:link` and `virtstand`
-* or `npm run build` and `node build/index`
+TBD.
 
 ## Requirements
 
@@ -23,11 +20,14 @@ Under development...
 * [Virtual Machine commands](/docs/commands_vm.md)
 * [Project commands](/docs/commands_project.md)
 * [Examples](/docs/examples.md)
+* [Known issues](/docs/known_issues.md)
 
-## Workarounds
+## Development
 
-For absolute paths MSYS (windows shell) changes them.
-Use `MSYS_NO_PATHCONV=1` to avoid it.
+* clone repo
+* `npm install`
+* either run `npm run build:link` and `virtstand`
+* or `npm run build` and `node build/index`
 
 ## License
 

@@ -8,6 +8,7 @@ This document is the Virtstand Virtual Machine commands reference. There are mor
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)
 - [Examples](./examples.md)
+- [Known issues](./known_issues.md)
 
 ## Commands
 

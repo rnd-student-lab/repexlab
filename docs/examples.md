@@ -8,6 +8,7 @@ This document is the Virtstand usage examples. There are more documentation file
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)
 - [Examples](./examples.md)
+- [Known issues](./known_issues.md)
 
 ## Content
 

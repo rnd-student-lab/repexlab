@@ -1,6 +1,15 @@
 # Virtstand
 
-Under development...
+Virtstand is a CLI instrument providing a framework for conducting experiments on software quality in virtual environment.
+It provides means to setup the experiment project and to apply various virtual environment configurations at the specified experiment stages.
+
+Main feature are:
+
+* Project bootstrapping.
+* Scaffolding for managing virtual machine configurations within the project.
+* CLI for managing the virtual environment while devoloping the experiment.
+* Task automation for managing the virtual environment while conducting the experiment.
+* Virtual machine resource utilization reporting.
 
 ## Installation
 

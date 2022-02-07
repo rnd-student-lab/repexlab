@@ -8,6 +8,7 @@ export default class VirtualMachineConfig {
       defaults: {
         box: 'ubuntu/bionic64',
         box_version: '>= 0',
+        boot_timeout: 600,
         provider: {
           provider: 'virtualbox',
           memory: 2048,

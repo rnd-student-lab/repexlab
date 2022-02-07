@@ -2,6 +2,8 @@ const template = `\
 Vagrant.configure("2") do |config|
   config.vm.box = "<%- box %>"
   config.vm.box_version = "<%- box_version %>"
+  config.vm.boot_timeout = <%= boot_timeout %>
+
   config.vm.provider "<%= provider.provider %>" do |v|
     v.memory = <%= provider.memory %>
     v.cpus = <%= provider.cpus %>

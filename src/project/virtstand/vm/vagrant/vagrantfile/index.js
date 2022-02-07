@@ -14,6 +14,7 @@ export default class Vagranfile {
     this.template = ejs.compile(template, {});
 
     this.defaults = {
+      boot_timeout: 600,
       provider: {
         provider: 'virtualbox',
         memory: 2048,

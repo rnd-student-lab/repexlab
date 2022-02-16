@@ -1,5 +1,5 @@
 import { prompt } from 'inquirer';
-import Virtstand from '../../../project/virtstand';
+import Repexlab from '../../../project/repexlab';
 import { logError, logSuccess } from '../../../utils/logger';
 
 export const command = 'remove';
@@ -18,10 +18,10 @@ export const handler = argv => {
 };
 
 export async function run(argv) {
-  const virtstand = new Virtstand(argv.stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(argv.stage);
+  await repexlab.init('./');
 
-  if (!virtstand.config.hasVM(argv.name)) {
+  if (!repexlab.config.hasVM(argv.name)) {
     logError(`Virtual Machine '${argv.name}' does not exists`);
     return;
   }
@@ -36,7 +36,7 @@ export async function run(argv) {
   ]);
 
   if (answers.removeVM) {
-    await virtstand.removeVM(argv.name);
+    await repexlab.removeVM(argv.name);
     logSuccess(`Removed the Virtual Machine '${argv.name}'`);
   }
 }

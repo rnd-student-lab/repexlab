@@ -3,7 +3,7 @@ import yargs from 'yargs';
 
 yargs // eslint-disable-line
   .commandDir('cmds')
-  .usage('Usage: virtstand <command> [options]')
+  .usage('Usage: repexlab <command> [options]')
   .demandCommand(1)
   .help('h')
   .alias('h', 'help').argv;

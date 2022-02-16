@@ -39,8 +39,8 @@ build/**/*
 # ignore yarn.lock
 yarn.lock
 
-# Ignore Virtstand files
-.virtstand/**/*
+# Ignore Repexlab files
+.repexlab/**/*
 `;
 
 export default template;

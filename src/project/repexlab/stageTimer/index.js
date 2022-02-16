@@ -1,7 +1,7 @@
 import { get, set } from 'lodash';
 import moment from 'moment';
 
-export default class VirtstandStageTimer {
+export default class RepexlabStageTimer {
   constructor() {
     this.timeEntries = {};
   }

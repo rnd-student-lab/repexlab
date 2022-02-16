@@ -1,7 +1,7 @@
 import { prompt } from 'inquirer';
 import { readdir } from 'fs-extra';
 import { isEmpty } from 'lodash';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 import { logError, logSuccess } from '../../utils/logger';
 import { run as addVM } from './vmCmds/add';
 
@@ -20,8 +20,8 @@ async function run(argv) {
     return;
   }
 
-  const virtstand = new Virtstand();
-  virtstand.create('./');
+  const repexlab = new Repexlab();
+  repexlab.create('./');
 
   logSuccess('Initialized an empty project');
 

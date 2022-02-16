@@ -1,6 +1,6 @@
-# Virtstand
+# Repexlab
 
-Virtstand is a CLI instrument providing a framework for conducting experiments on software quality in virtual environment.
+Repexlab (reproducible experiment laboratory) is a CLI instrument providing a framework for conducting experiments on software quality in virtual environment.
 It provides means to setup the experiment project and to apply various virtual environment configurations at the specified experiment stages.
 
 Main feature are:
@@ -35,7 +35,7 @@ TBD.
 
 * clone repo
 * `npm install`
-* either run `npm run build:link` and `virtstand`
+* either run `npm run build:link` and `repexlab`
 * or `npm run build` and `node build/index`
 
 ## License

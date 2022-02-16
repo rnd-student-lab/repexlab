@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { logSuccess } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 import { handler as compile } from './compile';
 
 export const command = 'setupHosts';
@@ -29,13 +29,13 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
   if (isEmpty(name)) {
-    await virtstand.operations.setupHosts();
+    await repexlab.operations.setupHosts();
     logSuccess('Done /etc/hosts setup for all VMs');
   } else {
-    await virtstand.operations.setupHosts(name);
+    await repexlab.operations.setupHosts(name);
     logSuccess(`Done /etc/hosts setup for VM '${name}'`);
   }
 }

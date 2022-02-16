@@ -2,8 +2,8 @@
 
 ## Additional documentation
 
-This document is the Virtstand usage examples. There are more documentation files in
-[`docs` in the Virtstand source tree](./):
+This document is the Repexlab usage examples. There are more documentation files in
+[`docs` in the Repexlab source tree](./):
 
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)

@@ -1,4 +1,4 @@
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 
 export const command = 'ssh';
 export const desc = 'Connect to a single specified VM using SSH';
@@ -17,7 +17,7 @@ export const handler = async argv => {
 
 export async function run(argv) {
   const { name, stage } = argv;
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
-  await virtstand.operations.ssh(name);
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
+  await repexlab.operations.ssh(name);
 }

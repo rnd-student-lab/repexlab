@@ -7,8 +7,8 @@ import {
 import {
   resolve, sep, join, dirname
 } from 'path';
-import VirtstandConfig from './config';
-import VirtstandOperations from './operations';
+import RepexlabConfig from './config';
+import RepexlabOperations from './operations';
 import VirtualMachine from './vm';
 
 import gitignoreTpl from '../templates/projectTemplates/gitignore';
@@ -16,17 +16,17 @@ import commonProvisionTpl from '../templates/projectTemplates/provision/common/p
 import dataGitkeepTpl from '../templates/projectTemplates/data/gitkeep';
 import reportsGitkeepTpl from '../templates/projectTemplates/reports/gitkeep';
 
-export default class Virtstand {
+export default class Repexlab {
   constructor(stage) {
-    this.mainFileName = 'virtstand.yml';
-    this.virtstandDirectoryName = '.virtstand';
+    this.mainFileName = 'repex.yml';
+    this.repexlabDirectoryName = '.repexlab';
     this.filePath = null;
     this.workingDirectory = null;
-    this.virtstandDirectory = null;
+    this.repexlabDirectory = null;
     this.stage = stage;
 
     this.virtualMachines = [];
-    this.config = new VirtstandConfig();
+    this.config = new RepexlabConfig();
     this.operations = null;
   }
 
@@ -44,24 +44,24 @@ export default class Virtstand {
   async create(dir) {
     this.filePath = join(dir, this.mainFileName);
     this.workingDirectory = dirname(this.filePath);
-    this.virtstandDirectory = join(this.workingDirectory, this.virtstandDirectoryName);
+    this.repexlabDirectory = join(this.workingDirectory, this.repexlabDirectoryName);
 
     await this.config.create();
     await this.config.save(this.filePath);
     await this.createDefaultProjectFiles();
 
     await this.initVirtualMachines();
-    this.operations = new VirtstandOperations(this.workingDirectory, this.virtualMachines);
+    this.operations = new RepexlabOperations(this.workingDirectory, this.virtualMachines);
   }
 
   async init(dir) {
     this.filePath = await this.searchMainFile(dir);
     this.workingDirectory = dirname(this.filePath);
-    this.virtstandDirectory = join(this.workingDirectory, this.virtstandDirectoryName);
+    this.repexlabDirectory = join(this.workingDirectory, this.repexlabDirectoryName);
 
     await this.config.init(this.filePath);
     await this.initVirtualMachines();
-    this.operations = new VirtstandOperations(this.workingDirectory, this.virtualMachines);
+    this.operations = new RepexlabOperations(this.workingDirectory, this.virtualMachines);
   }
 
   async initVirtualMachines() {
@@ -69,7 +69,7 @@ export default class Virtstand {
       const virtualMachine = new VirtualMachine(
         join(this.workingDirectory, declaration.path),
         declaration.name,
-        this.virtstandDirectory,
+        this.repexlabDirectory,
         this.stage
       );
       await virtualMachine.init();
@@ -93,7 +93,7 @@ export default class Virtstand {
     }, Promise.resolve(null));
 
     if (isEmpty(path)) {
-      throw new Error('File `virtstand.yml` not found!');
+      throw new Error('File `repex.yml` not found!');
     }
 
     return path;
@@ -103,7 +103,7 @@ export default class Virtstand {
     const virtualMachine = new VirtualMachine(
       join(this.workingDirectory, path),
       name,
-      this.virtstandDirectory,
+      this.repexlabDirectory,
       this.stage
     );
     await virtualMachine.create(config);

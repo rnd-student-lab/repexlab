@@ -3,7 +3,7 @@ import {
 } from 'lodash';
 import { join } from 'path';
 
-export default class VirtstandOperations {
+export default class RepexlabOperations {
   constructor(workingDirectory, virtualMachines) {
     this.workingDirectory = workingDirectory;
     this.virtualMachines = virtualMachines;

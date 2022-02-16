@@ -1,5 +1,5 @@
 import { logError, logSuccess } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 import { handler as compile } from './compile';
 
 export const command = 'copy';
@@ -53,10 +53,10 @@ export async function run(argv) {
     name, stage, direction, from, to
   } = argv;
 
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
   try {
-    await virtstand.operations.copy(name, direction, from, to);
+    await repexlab.operations.copy(name, direction, from, to);
     logSuccess(`Transferred the target between host and VM '${name}'`);
   } catch (error) {
     logError(`Failed to transfer the target between host and VM '${name}'`);

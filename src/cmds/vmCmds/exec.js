@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { logError, logSuccess } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 import { handler as compile } from './compile';
 
 export const command = 'exec';
@@ -36,10 +36,10 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
   try {
-    await virtstand.operations.exec(name, argv.command);
+    await repexlab.operations.exec(name, argv.command);
     if (isEmpty(name)) {
       logSuccess('Executed the command on all VMs.');
     } else {

@@ -2,8 +2,8 @@
 
 ## Additional documentation
 
-This document is the list of Virtstand known issues and possible solutions to those issues. There are more documentation files in
-[`docs` in the Virtstand source tree](./):
+This document is the list of Repexlab known issues and possible solutions to those issues. There are more documentation files in
+[`docs` in the Repexlab source tree](./):
 
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)

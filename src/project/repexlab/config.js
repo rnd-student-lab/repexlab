@@ -3,7 +3,7 @@ import {
 } from 'lodash';
 import ConfigFile from '../configFile';
 
-export default class VirtstandConfig {
+export default class RepexlabConfig {
   constructor() {
     this.defaults = {
       version: '0.1',

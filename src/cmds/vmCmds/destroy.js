@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { logSuccess } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 import { handler as compile } from './compile';
 
 export const command = 'destroy';
@@ -29,13 +29,13 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
   if (isEmpty(name)) {
-    await virtstand.operations.destroy();
+    await repexlab.operations.destroy();
     logSuccess('Destroyed all VMs');
   } else {
-    await virtstand.operations.destroy(name);
+    await repexlab.operations.destroy(name);
     logSuccess(`Destroyed VM '${name}'`);
   }
 }

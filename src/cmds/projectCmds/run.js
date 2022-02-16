@@ -3,7 +3,7 @@ import {
   cloneDeep, compact, filter, includes, isEmpty, merge, reduce
 } from 'lodash';
 import { logInfo } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 
 import { run as compile } from '../vmCmds/compile';
 import { run as copy } from '../vmCmds/copy';
@@ -15,7 +15,7 @@ import { run as restart } from '../vmCmds/restart';
 import { run as start } from '../vmCmds/start';
 import { run as stop } from '../vmCmds/stop';
 import { run as report } from '../vmCmds/report';
-import VirtstandStageTimer from '../../project/virtstand/stageTimer';
+import RepexlabStageTimer from '../../project/repexlab/stageTimer';
 
 export const command = 'run';
 export const desc = 'Run the entire experiment';
@@ -34,9 +34,9 @@ export const handler = async argv => {
 
 async function run(argv) {
   const { stage } = argv;
-  const commonVirtstand = new Virtstand();
-  await commonVirtstand.init('./');
-  const allStages = cloneDeep(commonVirtstand.config.getStages());
+  const commonRepexlab = new Repexlab();
+  await commonRepexlab.init('./');
+  const allStages = cloneDeep(commonRepexlab.config.getStages());
 
   const stageNames = compact(castArray(stage));
   const stages = filter(
@@ -57,7 +57,7 @@ async function run(argv) {
     report,
   };
 
-  const stageTimer = new VirtstandStageTimer();
+  const stageTimer = new RepexlabStageTimer();
 
   await reduce(stages, async (stageAcc, stageItem) => {
     await stageAcc;

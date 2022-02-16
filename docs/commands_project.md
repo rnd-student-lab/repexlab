@@ -2,8 +2,8 @@
 
 ## Additional documentation
 
-This document is the Virtstand Project commands reference. There are more documentation files in
-[`docs` in the Virtstand source tree](./):
+This document is the Repexlab Project commands reference. There are more documentation files in
+[`docs` in the Repexlab source tree](./):
 
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)
@@ -12,7 +12,7 @@ This document is the Virtstand Project commands reference. There are more docume
 
 ## Commands
 
-### virtstand project init
+### repexlab project init
 
 Initialize a new project.
 Current directory must be empty.
@@ -20,10 +20,10 @@ Current directory must be empty.
 CLI usage example:
 
 ```bash
-virtstand project init
+repexlab project init
 ```
 
-### virtstand project run
+### repexlab project run
 
 Run the entire experiment or a specific experiment stage.
 
@@ -34,20 +34,20 @@ Run the entire experiment or a specific experiment stage.
 CLI usage example:
 
 ```bash
-virtstand project run -s main
+repexlab project run -s main
 ```
 
-### virtstand project vm add
+### repexlab project vm add
 
 Add a new virtual machine configuration to the project.
 
 CLI usage example:
 
 ```bash
-virtstand project vm add
+repexlab project vm add
 ```
 
-### virtstand project vm remove
+### repexlab project vm remove
 
 Remove an existing virtual machine configuration from the project.
 
@@ -58,5 +58,5 @@ Remove an existing virtual machine configuration from the project.
 CLI usage example:
 
 ```bash
-virtstand project remove -n vm1
+repexlab project remove -n vm1
 ```

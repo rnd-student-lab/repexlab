@@ -4,7 +4,7 @@ import { IPv4 } from 'ipaddr.js';
 import { isInteger } from 'lodash';
 import isValidHostname from 'is-valid-hostname';
 
-import Virtstand from '../../../project/virtstand';
+import Repexlab from '../../../project/repexlab';
 import { logSuccess } from '../../../utils/logger';
 
 export const command = 'add';
@@ -16,10 +16,10 @@ export const handler = argv => {
 };
 
 export async function run(argv) {
-  const virtstand = new Virtstand(argv.stage);
+  const repexlab = new Repexlab(argv.stage);
   const defaultDirectory = 'vms';
 
-  await virtstand.init('./');
+  await repexlab.init('./');
 
   const answers = await prompt([
     {
@@ -31,7 +31,7 @@ export async function run(argv) {
         if (!isValidHostname(input)) {
           return 'Virtual Machine name must be a valid hostname';
         }
-        if (virtstand.config.hasVM(input)) {
+        if (repexlab.config.hasVM(input)) {
           return 'Virtual Machine with this name already exists within the project';
         }
         return true;
@@ -100,7 +100,7 @@ export async function run(argv) {
     }
   };
 
-  await virtstand.addVM(answers.name, posix.join(defaultDirectory, answers.name), config);
+  await repexlab.addVM(answers.name, posix.join(defaultDirectory, answers.name), config);
 
   logSuccess(`Added a new Virtual Machine '${answers.name}'`);
 }

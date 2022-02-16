@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { logError, logSuccess } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 import { handler as compile } from './compile';
 
 export const command = 'report';
@@ -52,8 +52,8 @@ export async function run(argv, stageTimer) {
     name, stage, start, end, labels
   } = argv;
 
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
 
   const now = moment();
   let startTime;
@@ -68,7 +68,7 @@ export async function run(argv, stageTimer) {
   }
 
   try {
-    await virtstand.operations.report(name, now.unix(), startTime, endTime, labels);
+    await repexlab.operations.report(name, now.unix(), startTime, endTime, labels);
 
     if (isEmpty(name)) {
       logSuccess('Created reports on all VMs.');

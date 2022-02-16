@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { logSuccess } from '../../utils/logger';
-import Virtstand from '../../project/virtstand';
+import Repexlab from '../../project/repexlab';
 
 export const command = 'compile';
 export const desc = 'Compile all VMs or a single specified VM';
@@ -27,13 +27,13 @@ export const handler = async argv => {
 export async function run(argv) {
   const { name, stage } = argv;
 
-  const virtstand = new Virtstand(stage);
-  await virtstand.init('./');
+  const repexlab = new Repexlab(stage);
+  await repexlab.init('./');
   if (isEmpty(name)) {
-    await virtstand.operations.compile();
+    await repexlab.operations.compile();
     logSuccess('Compiled all VMs');
   } else {
-    await virtstand.operations.compile(name);
+    await repexlab.operations.compile(name);
     logSuccess(`Compiled VM '${name}'`);
   }
 }

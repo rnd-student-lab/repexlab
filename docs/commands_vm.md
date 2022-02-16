@@ -2,8 +2,8 @@
 
 ## Additional documentation
 
-This document is the Virtstand Virtual Machine commands reference. There are more documentation files in
-[`docs` in the Virtstand source tree](./):
+This document is the Repexlab Virtual Machine commands reference. There are more documentation files in
+[`docs` in the Repexlab source tree](./):
 
 - [Virtual Machine commands](./commands_vm.md)
 - [Project commands](./commands_project.md)
@@ -12,7 +12,7 @@ This document is the Virtstand Virtual Machine commands reference. There are mor
 
 ## Commands
 
-### virtstand vm compile
+### repexlab vm compile
 
 Compile virtual machine(s).
 
@@ -24,7 +24,7 @@ Compile virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm compile -n vm1
+repexlab vm compile -n vm1
 ```
 
 Task automation usage example:
@@ -37,7 +37,7 @@ Task automation usage example:
   description: Run compile command for both VMs
 ```
 
-### virtstand vm start
+### repexlab vm start
 
 Start virtual machine(s).
 
@@ -49,7 +49,7 @@ Start virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm start -n vm1
+repexlab vm start -n vm1
 ```
 
 Task automation usage example:
@@ -60,7 +60,7 @@ Task automation usage example:
   description: Start virtual machine "vm1"
 ```
 
-### virtstand vm stop
+### repexlab vm stop
 
 Stop virtual machine(s).
 
@@ -72,7 +72,7 @@ Stop virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm stop -n vm1
+repexlab vm stop -n vm1
 ```
 
 Task automation usage example:
@@ -83,7 +83,7 @@ Task automation usage example:
   description: Stop virtual machine "vm1"
 ```
 
-### virtstand vm restart
+### repexlab vm restart
 
 Restart virtual machine(s).
 
@@ -95,7 +95,7 @@ Restart virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm restart -n vm1
+repexlab vm restart -n vm1
 ```
 
 Task automation usage example:
@@ -106,7 +106,7 @@ Task automation usage example:
   description: Restart virtual machine "vm1"
 ```
 
-### virtstand vm provision
+### repexlab vm provision
 
 Provision virtual machine(s).
 
@@ -118,7 +118,7 @@ Provision virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm provision -n vm1
+repexlab vm provision -n vm1
 ```
 
 Task automation usage example:
@@ -129,7 +129,7 @@ Task automation usage example:
   description: Provision virtual machine "vm1"
 ```
 
-### virtstand vm setupHosts
+### repexlab vm setupHosts
 
 Add IP-Hostname bindings to /etc/hosts to virtual machine(s).
 
@@ -141,7 +141,7 @@ Add IP-Hostname bindings to /etc/hosts to virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm setupHosts
+repexlab vm setupHosts
 ```
 
 Task automation usage example:
@@ -151,7 +151,7 @@ Task automation usage example:
   description: Add IP-Hostname bindings to all virtual machines
 ```
 
-### virtstand vm destroy
+### repexlab vm destroy
 
 Destroy virtual machine(s).
 
@@ -163,7 +163,7 @@ Destroy virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm destroy -n vm1
+repexlab vm destroy -n vm1
 ```
 
 Task automation usage example:
@@ -174,7 +174,7 @@ Task automation usage example:
   description: Destroy virtual machine "vm1"
 ```
 
-### virtstand vm copy
+### repexlab vm copy
 
 Copy a file or a directory between host system and virtual machine(s). Host path must be relative to the project root directory.
 
@@ -189,7 +189,7 @@ Copy a file or a directory between host system and virtual machine(s). Host path
 CLI usage example:
 
 ```bash
-virtstand vm copy -n vm1 -d out -f "/home/vagrant/atop.raw.txt" -t "./data/atop.raw.txt"
+repexlab vm copy -n vm1 -d out -f "/home/vagrant/atop.raw.txt" -t "./data/atop.raw.txt"
 ```
 
 Task automation usage example:
@@ -204,7 +204,7 @@ Task automation usage example:
   description: Copy atop.txt file from VM to host
 ```
 
-### virtstand vm exec
+### repexlab vm exec
 
 Execute a shell command on virtual machine(s).
 
@@ -217,7 +217,7 @@ Execute a shell command on virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm exec -c "atop -r ${atop_log} -P CPU,MEM > /home/vagrant/atop.raw.txt"
+repexlab vm exec -c "atop -r ${atop_log} -P CPU,MEM > /home/vagrant/atop.raw.txt"
 ```
 
 Task automation usage example:
@@ -229,7 +229,7 @@ Task automation usage example:
   description: Export atop logs to the atop.raw.txt
 ```
 
-### virtstand vm report
+### repexlab vm report
 
 Create a resource usage report for virtual machine(s).
 
@@ -244,7 +244,7 @@ Create a resource usage report for virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm report -n vm1 --start 13:30:58 --end 13:50:00 -l CPU,MEM
+repexlab vm report -n vm1 --start 13:30:58 --end 13:50:00 -l CPU,MEM
 ```
 
 Task automation usage example:
@@ -260,7 +260,7 @@ Task automation usage example:
   description: Export CPU and MEM reports
 ```
 
-### virtstand vm ssh
+### repexlab vm ssh
 
 Connect to a single specified virtual machine using SSH.
 
@@ -271,10 +271,10 @@ Connect to a single specified virtual machine using SSH.
 CLI usage example:
 
 ```bash
-virtstand vm ssh -n vm1
+repexlab vm ssh -n vm1
 ```
 
-### virtstand vm status
+### repexlab vm status
 
 Display status of virtual machine(s).
 
@@ -286,5 +286,5 @@ Display status of virtual machine(s).
 CLI usage example:
 
 ```bash
-virtstand vm status
+repexlab vm status
 ```

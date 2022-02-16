@@ -11,7 +11,7 @@ import VirtualMachineConfig from './config';
 import provisionTpl from '../../templates/vmTemplates/provision/provision';
 
 export default class VirtualMachine {
-  constructor(path, name, virtstandDirectory, stage) {
+  constructor(path, name, repexlabDirectory, stage) {
     this.utilityDirectoryName = 'vm';
     this.vagrantfileName = 'Vagrantfile';
     this.mainFileName = 'vm.yml';
@@ -21,9 +21,9 @@ export default class VirtualMachine {
     this.name = name;
     this.stage = stage;
 
-    this.virtstandDirectory = virtstandDirectory;
+    this.repexlabDirectory = repexlabDirectory;
     this.compilationTargetDirectory = join(
-      this.virtstandDirectory,
+      this.repexlabDirectory,
       this.utilityDirectoryName,
       this.name
     );

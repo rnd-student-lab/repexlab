@@ -67,7 +67,10 @@ export default class RepexlabOperations {
   async provision(names) {
     await this.runParallel(
       this.getVMsByNames(names),
-      async (virtualMachine) => virtualMachine.operations.provision()
+      async (virtualMachine) => virtualMachine.operations.provision(
+        this.workingDirectory,
+        virtualMachine
+      )
     );
   }
 

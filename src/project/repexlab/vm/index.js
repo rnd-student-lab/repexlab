@@ -53,9 +53,18 @@ export default class VirtualMachine {
     return this.vagrantfile.compileConfigObject(this.config.getConfigObject(), this.stage);
   }
 
+  getConfigWithRelativePaths(targetPath) {
+    return this.vagrantfile.convertObject(
+      this.config.getConfigObject(),
+      this.stage,
+      this.workingDirectory,
+      targetPath
+    );
+  }
+
   async compile() {
     const vmTargetPath = join(this.compilationTargetDirectory, this.vagrantfileName);
-    const output = this.vagrantfile.convertObject(
+    const output = this.vagrantfile.compileVagrantfile(
       this.config.getConfigObject(),
       this.stage,
       this.workingDirectory,

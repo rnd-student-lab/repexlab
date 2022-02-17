@@ -19,15 +19,6 @@ export default class VirtualMachineConfig {
             type: 'private_network',
             ip: '192.168.123.123'
           },
-          synced_folder: {
-            type: 'virtualbox',
-            from: '../../data',
-            to: '/vagrant',
-            mount_options: {
-              dmode: 777,
-              fmode: 777,
-            },
-          },
           customize: [
             [
               'modifyvm',
@@ -42,6 +33,15 @@ export default class VirtualMachineConfig {
               '1'
             ]
           ]
+        },
+        synced_folder: {
+          type: 'virtualbox',
+          from: '../../data',
+          to: '/vagrant',
+          mount_options: {
+            dmode: 777,
+            fmode: 777,
+          },
         },
         provision: [
           {

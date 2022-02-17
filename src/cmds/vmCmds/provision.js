@@ -23,8 +23,7 @@ export const builder = yargs => yargs
   });
 
 export const handler = async argv => {
-  // await compile(argv);
-  await restart(argv);
+  await compile(argv);
   await run(argv);
 };
 

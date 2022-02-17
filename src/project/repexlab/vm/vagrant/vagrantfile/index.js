@@ -47,7 +47,11 @@ export default class Vagranfile {
   convertObject(config, stage, configDir, targetDir) {
     const vm = this.compileConfigObject(config, stage);
     const vmWithUpdatedPaths = this.constructor.replacePaths(vm, configDir, targetDir);
-    const vmWithQuotedCustomizations = this.constructor.prepareCustomizations(vmWithUpdatedPaths);
+    return this.constructor.prepareCustomizations(vmWithUpdatedPaths);
+  }
+
+  compileVagrantfile(config, stage, configDir, targetDir) {
+    const vmWithQuotedCustomizations = this.convertObject(config, stage, configDir, targetDir);
     return this.template(vmWithQuotedCustomizations);
   }
 

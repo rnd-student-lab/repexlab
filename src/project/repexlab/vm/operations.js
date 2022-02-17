@@ -46,7 +46,16 @@ export default class VirtualMachineOperations {
     }, Promise.resolve());
   }
 
-  async provision() {
+  async provision(projectPath, vm) {
+    const config = vm.getConfigWithRelativePaths(projectPath);
+
+    await this.exec('sudo bash -c "rm -Rf /provision/"');
+    await this.exec('sudo bash -c "mkdir -m 777 -p /provision/"');
+    await reduce(config.provision, async (acc, provision, i) => {
+      await acc;
+      await this.copy(projectPath, 'in', provision.directory, `/provision/${i}/`);
+    }, Promise.resolve());
+
     const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
     await machine.provision();
   }

@@ -68,7 +68,7 @@ async function run(argv) {
       await actionsAcc;
       if (availableActions[action.command]) {
         await availableActions[action.command](
-          merge({ name: action.vms }, action.options),
+          merge({ name: action.vms, stage: stageItem.name }, action.options),
           stageTimer
         );
       }

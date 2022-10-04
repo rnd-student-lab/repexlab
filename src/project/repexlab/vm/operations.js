@@ -7,7 +7,7 @@ import {
 } from 'path';
 import * as vagrant from 'node-vagrant';
 import {
-  first, get, includes, reduce, split, trim
+  first, get, includes, reduce, replace, split, trim
 } from 'lodash';
 import { spawn } from 'child_process';
 import SSH2Promise from 'ssh2-promise';
@@ -164,5 +164,34 @@ export default class VirtualMachineOperations {
     if (includes(out.stderr, 'No such file or directory')) {
       throw out.stderr.toString();
     }
+  }
+
+  async saveSnapshot(name) {
+    const command = `vagrant snapshot save ${name} --force`;
+    await execa.command(command, {
+      cwd: this.compilationTargetDirectory,
+    });
+  }
+
+  async restoreSnapshot(name) {
+    const command = `vagrant snapshot restore ${name} --no-provision`;
+    await execa.command(command, {
+      cwd: this.compilationTargetDirectory,
+    });
+  }
+
+  async removeSnapshot(name) {
+    const command = `vagrant snapshot delete ${name}`;
+    await execa.command(command, {
+      cwd: this.compilationTargetDirectory,
+    });
+  }
+
+  async listSnapshots() {
+    const command = `vagrant snapshot list`;
+    const output = await execa.command(command, {
+      cwd: this.compilationTargetDirectory,
+    });
+    return trim(replace(output.stdout, '==> default:', ''));
   }
 }

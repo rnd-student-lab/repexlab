@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash';
 import { stringify } from 'yaml';
 import Repexlab from '../../project/repexlab';
 import { logError, logSuccess, logInfo } from '../../utils/logger';
+import { handler as compile } from './compile';
 
 export const command = 'listSnapshots';
 export const desc = 'List snapshots of an existing Virtual Machine';
@@ -21,8 +22,9 @@ export const builder = yargs => yargs
     required: false,
   });
 
-export const handler = argv => {
-  run(argv);
+export const handler = async argv => {
+  await compile(argv);
+  await run(argv);
 };
 
 export async function run(argv) {

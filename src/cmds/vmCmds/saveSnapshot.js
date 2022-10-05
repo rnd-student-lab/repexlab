@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash';
 import Repexlab from '../../project/repexlab';
 import { logError, logSuccess } from '../../utils/logger';
+import { handler as compile } from './compile';
 
 export const command = 'saveSnapshot';
 export const desc = 'Save an existing Virtual Machine state to a snapshot';
@@ -27,8 +28,9 @@ export const builder = yargs => yargs
     required: false,
   });
 
-export const handler = argv => {
-  run(argv);
+export const handler = async argv => {
+  await compile(argv);
+  await run(argv);
 };
 
 export async function run(argv) {

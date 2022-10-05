@@ -288,3 +288,96 @@ CLI usage example:
 ```bash
 repexlab vm status
 ```
+
+### repexlab vm saveSnapshot
+
+Create a snapshot of specified virtual machine(s).
+
+|Option|Shorthand|Description|Type|Required|Default value|
+|-|-|-|-|-|-|
+|--name|-n|Virtual machine name|string|Yes|-|
+|--stage|-s|Experiment stage name|string|No|-|
+|--snapshotName|--sn|Snapshot name|string|Yes|-|
+
+CLI usage example:
+
+```bash
+repexlab vm saveSnapshot -n vm1 --sn mySnapshotName
+```
+
+Task automation usage example:
+
+```yaml
+- command: saveSnapshot
+  vms: vm1
+  options:
+    snapshotName: mySnapshotName
+  description: Create a snapshot of 'vm1' named 'mySnapshotName'
+```
+
+### repexlab vm restoreSnapshot
+
+Restore state of specified virtual machine(s) from specified snapshot.
+
+|Option|Shorthand|Description|Type|Required|Default value|
+|-|-|-|-|-|-|
+|--name|-n|Virtual machine name|string|Yes|-|
+|--stage|-s|Experiment stage name|string|No|-|
+|--snapshotName|--sn|Snapshot name|string|Yes|-|
+
+CLI usage example:
+
+```bash
+repexlab vm restoreSnapshot -n vm1 --sn mySnapshotName
+```
+
+Task automation usage example:
+
+```yaml
+- command: restoreSnapshot
+  vms: vm1
+  options:
+    snapshotName: mySnapshotName
+  description: Restore state of 'vm1' from snapshot named 'mySnapshotName'
+```
+
+### repexlab vm removeSnapshot
+
+Remove a snapshot of specified virtual machine(s).
+
+|Option|Shorthand|Description|Type|Required|Default value|
+|-|-|-|-|-|-|
+|--name|-n|Virtual machine name|string|Yes|-|
+|--stage|-s|Experiment stage name|string|No|-|
+|--snapshotName|--sn|Snapshot name|string|Yes|-|
+
+CLI usage example:
+
+```bash
+repexlab vm removeSnapshot -n vm1 --sn mySnapshotName
+```
+
+Task automation usage example:
+
+```yaml
+- command: removeSnapshot
+  vms: vm1
+  options:
+    snapshotName: mySnapshotName
+  description: Remove a snapshot of 'vm1' named 'mySnapshotName'
+```
+
+### repexlab vm listSnapshots
+
+Display existing snapshots of virtual machine(s).
+
+|Option|Shorthand|Description|Type|Required|Default value|
+|-|-|-|-|-|-|
+|--name|-n|Virtual machine name|string|No|All VMs|
+|--stage|-s|Experiment stage name|string|No|-|
+
+CLI usage example:
+
+```bash
+repexlab vm listSnapshots
+```

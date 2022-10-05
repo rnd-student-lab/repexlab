@@ -2,15 +2,18 @@ import execa from 'execa';
 import {
   reduce, some, split, startsWith
 } from 'lodash';
+import { platform } from 'node:process';
 
 export default class PluginManager {
   constructor(vmTargetDirectory) {
     this.requiredPlugins = [
       'vagrant-bindfs',
       'vagrant-disksize',
-      'vagrant-winnfsd',
       'vagrant-scp',
     ];
+    if (platform === 'win32') {
+      this.requiredPlugins.push('vagrant-winnfsd');
+    }
     this.installedPlugins = [];
     this.vmTargetDirectory = vmTargetDirectory;
   }

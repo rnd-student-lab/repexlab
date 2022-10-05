@@ -128,4 +128,32 @@ export default class RepexlabOperations {
       )
     );
   }
+
+  async saveSnapshot(names, snapshotName) {
+    await this.runSequential(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.operations.saveSnapshot(snapshotName)
+    );
+  }
+
+  async restoreSnapshot(names, snapshotName) {
+    await this.runSequential(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.operations.restoreSnapshot(snapshotName)
+    );
+  }
+
+  async removeSnapshot(names, snapshotName) {
+    await this.runSequential(
+      this.getVMsByNames(names),
+      async (virtualMachine) => virtualMachine.operations.removeSnapshot(snapshotName)
+    );
+  }
+
+  async listSnapshots(names) {
+    return this.runParallel(this.getVMsByNames(names), async (virtualMachine) => {
+      const snapshots = await virtualMachine.operations.listSnapshots();
+      return `${virtualMachine.name}: ${snapshots}`;
+    });
+  }
 }

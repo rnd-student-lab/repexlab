@@ -15,6 +15,9 @@ import { run as restart } from '../vmCmds/restart';
 import { run as start } from '../vmCmds/start';
 import { run as stop } from '../vmCmds/stop';
 import { run as report } from '../vmCmds/report';
+import { run as saveSnapshot } from '../vmCmds/saveSnapshot';
+import { run as restoreSnapshot } from '../vmCmds/restoreSnapshot';
+import { run as removeSnapshot } from '../vmCmds/removeSnapshot';
 import RepexlabStageTimer from '../../project/repexlab/stageTimer';
 
 export const command = 'run';
@@ -55,6 +58,9 @@ async function run(argv) {
     start,
     stop,
     report,
+    saveSnapshot,
+    restoreSnapshot,
+    removeSnapshot,
   };
 
   const stageTimer = new RepexlabStageTimer();

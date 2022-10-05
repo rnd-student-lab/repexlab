@@ -43,7 +43,7 @@ export async function run(argv) {
       return;
     }
     const snapshots = await repexlab.operations.listSnapshots(name);
-    logSuccess(`VM '${name}' status:`);
+    logSuccess(`VM '${name}' snapshots:`);
     logInfo(stringify(snapshots));
   }
 }

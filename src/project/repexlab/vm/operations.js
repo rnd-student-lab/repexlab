@@ -188,10 +188,18 @@ export default class VirtualMachineOperations {
   }
 
   async listSnapshots() {
-    const command = `vagrant snapshot list`;
+    const command = 'vagrant snapshot list';
     const output = await execa.command(command, {
       cwd: this.compilationTargetDirectory,
     });
-    return trim(replace(output.stdout, '==> default:', ''));
+
+    const noSnapshotsText = 'No snapshots have been taken yet!';
+
+    const trimmed = trim(replace(output.stdout, '==> default:', ''));
+    if (includes(trimmed, noSnapshotsText)) {
+      return noSnapshotsText;
+    }
+
+    return split(trimmed, /\r?\n/);
   }
 }

@@ -1,6 +1,6 @@
 import {
   castArray,
-  cloneDeep, compact, filter, includes, isEmpty, merge, reduce
+  cloneDeep, compact, dropRightWhile, dropWhile, filter, includes, isEmpty, merge, reduce
 } from 'lodash';
 import { logInfo } from '../../utils/logger';
 import Repexlab from '../../project/repexlab';
@@ -27,10 +27,25 @@ export const builder = yargs => yargs
   .option('stage', {
     alias: 's',
     string: true,
-    describe: 'Stage name',
+    describe: 'Stage name for running a specific stage',
     requiresArg: true,
     required: false,
-  });
+  })
+  .option('fromStage', {
+    alias: 'fs',
+    string: true,
+    describe: 'Stage name for running all stages starting from this one',
+    requiresArg: true,
+    required: false,
+  })
+  .option('toStage', {
+    alias: 'ts',
+    string: true,
+    describe: 'Stage name for running all stages finishing at this one',
+    requiresArg: true,
+    required: false,
+  })
+  .conflicts('stage', ['fromStage', 'toStage']);
 
 export const handler = async argv => {
   await validateConfig(argv);
@@ -38,16 +53,27 @@ export const handler = async argv => {
 };
 
 async function run(argv) {
-  const { stage } = argv;
+  const { stage, fromStage, toStage } = argv;
   const commonRepexlab = new Repexlab();
   await commonRepexlab.init('./');
   const allStages = cloneDeep(commonRepexlab.config.getStages());
 
-  const stageNames = compact(castArray(stage));
-  const stages = filter(
-    allStages,
-    (specificStage) => isEmpty(stageNames) || (includes(stageNames, specificStage.name))
-  );
+  let stages = [];
+  if (isEmpty(stage)) {
+    stages = allStages;
+    if (!isEmpty(fromStage)) {
+      stages = dropWhile(stages, (specificStage) => (specificStage.name !== fromStage));
+    }
+    if (!isEmpty(toStage)) {
+      stages = dropRightWhile(stages, (specificStage) => (specificStage.name !== toStage));
+    }
+  } else {
+    const stageNames = compact(castArray(stage));
+    stages = filter(
+      allStages,
+      (specificStage) => isEmpty(stageNames) || (includes(stageNames, specificStage.name))
+    );
+  }
 
   const availableActions = {
     compile,

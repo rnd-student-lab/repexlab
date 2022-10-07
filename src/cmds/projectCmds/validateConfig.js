@@ -28,7 +28,7 @@ async function run() {
     }
   });
 
-  const hasErrors = (findIndex(issues, (issue) => (issue.type === 'WARNING')) >= 0);
+  const hasErrors = (findIndex(issues, (issue) => (issue.type === 'ERROR')) >= 0);
   if (hasErrors) {
     throw new Error('Please, fix the errors above before proceeding');
   }

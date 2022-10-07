@@ -1,4 +1,4 @@
-import { each, find } from 'lodash';
+import { each, findIndex } from 'lodash';
 import { logError, logWarning } from '../../utils/logger';
 import Repexlab from '../../project/repexlab';
 
@@ -28,7 +28,7 @@ async function run() {
     }
   });
 
-  const hasErrors = find(issues, (issue) => (issue.type === 'ERROR'));
+  const hasErrors = (findIndex(issues, (issue) => (issue.type === 'WARNING')) >= 0);
   if (hasErrors) {
     throw new Error('Please, fix the errors above before proceeding');
   }

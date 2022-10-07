@@ -4,6 +4,7 @@ import {
 } from 'lodash';
 import { logInfo } from '../../utils/logger';
 import Repexlab from '../../project/repexlab';
+import { handler as validateConfig } from './validateConfig';
 
 import { run as compile } from '../vmCmds/compile';
 import { run as copy } from '../vmCmds/copy';
@@ -32,6 +33,7 @@ export const builder = yargs => yargs
   });
 
 export const handler = async argv => {
+  await validateConfig(argv);
   await run(argv);
 };
 

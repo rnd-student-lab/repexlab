@@ -1,5 +1,5 @@
 import {
-  filter, find, merge, some
+  filter, find, merge, size, some, uniqBy
 } from 'lodash';
 import ConfigFile from '../configFile';
 
@@ -84,5 +84,19 @@ export default class RepexlabConfig {
 
   getStages() {
     return this.config.stages;
+  }
+
+  validate() {
+    const issues = [];
+
+    if (size(this.getStages()) !== size(uniqBy(this.getStages(), 'name'))) {
+      issues.push({
+        code: 101,
+        message: 'Stage names are not unique',
+        type: 'WARNING',
+      });
+    }
+
+    return issues;
   }
 }

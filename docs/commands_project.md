@@ -37,6 +37,16 @@ CLI usage example:
 repexlab project run -s main
 ```
 
+### repexlab project validateConfig
+
+Performs check for possible issues with project config files.
+
+CLI usage example:
+
+```bash
+repexlab project validateConfig
+```
+
 ### repexlab project vm add
 
 Add a new virtual machine configuration to the project.

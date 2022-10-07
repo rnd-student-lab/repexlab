@@ -64,6 +64,10 @@ export default class Repexlab {
     this.operations = new RepexlabOperations(this.workingDirectory, this.virtualMachines);
   }
 
+  async validateConfig() {
+    return this.config.validate();
+  }
+
   async initVirtualMachines() {
     this.virtualMachines = await Promise.all(map(this.config.getVMs(), async (declaration) => {
       const virtualMachine = new VirtualMachine(

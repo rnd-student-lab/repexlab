@@ -5,6 +5,7 @@ export const msgTypes = {
   FADED: 'faded',
   INFO: 'info',
   ERROR: 'error',
+  WARNING: 'warning',
   SUCCESS: 'success',
   SCREAM: 'scream'
 };
@@ -21,6 +22,8 @@ export const chalkMsg = (msg, type) => {
   switch (type) {
     case msgTypes.ERROR:
       return chalk.bold.red(msg);
+    case msgTypes.WARNING:
+      return chalk.bold.yellow(msg);
     case msgTypes.FADED:
       return chalk.dim.yellow(msg);
     case msgTypes.INFO:

@@ -1,8 +1,11 @@
+import { join } from 'node:path';
+import { platform } from 'node:process';
 import execa from 'execa';
 import {
+  map,
   reduce, some, split, startsWith
 } from 'lodash';
-import { platform } from 'node:process';
+import { readJSON } from 'fs-extra';
 
 export default class PluginManager {
   constructor(vmTargetDirectory) {
@@ -16,6 +19,9 @@ export default class PluginManager {
     }
     this.installedPlugins = [];
     this.vmTargetDirectory = vmTargetDirectory;
+
+    this.vagrantDirectory = '.vagrant';
+    this.pluginListFile = 'plugins.json';
   }
 
   async installPlugin(plugin) {
@@ -30,11 +36,18 @@ export default class PluginManager {
   }
 
   async refreshInstalledPlugins() {
-    const { stdout } = await execa('vagrant plugin list --local', {
-      cwd: this.vmTargetDirectory,
-    });
+    try {
+      const plugins = await readJSON(
+        join(this.vmTargetDirectory, this.vagrantDirectory, this.pluginListFile)
+      );
+      this.installedPlugins = map(plugins.installed, (data, plugin) => `${plugin} (${data.installed_gem_version}, local)`);
+    } catch (e) {
+      const { stdout } = await execa('vagrant plugin list --local', {
+        cwd: this.vmTargetDirectory,
+      });
+      this.installedPlugins = split(stdout, '\n');
+    }
 
-    this.installedPlugins = split(stdout, '\n');
     return this.installedPlugins;
   }
 

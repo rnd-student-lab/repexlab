@@ -25,7 +25,7 @@ export default class PluginManager {
   }
 
   async installPlugin(plugin) {
-    await execa(`vagrant plugin install --local ${plugin}`, {
+    await execa('vagrant', ['plugin', 'install', '--local', plugin], {
       cwd: this.vmTargetDirectory,
     });
     await this.refreshInstalledPlugins();
@@ -42,7 +42,7 @@ export default class PluginManager {
       );
       this.installedPlugins = map(plugins.installed, (data, plugin) => `${plugin} (${data.installed_gem_version}, local)`);
     } catch (e) {
-      const { stdout } = await execa('vagrant plugin list --local', {
+      const { stdout } = await execa('vagrant', ['plugin', 'list', '--local'], {
         cwd: this.vmTargetDirectory,
       });
       this.installedPlugins = split(stdout, '\n');

@@ -11,6 +11,10 @@ Vagrant.configure("2") do |config|
     <% for (let i in provider.customize) { %>
     v.customize [<%- provider.customize[i].join(', ') %>]
     <% } %>
+
+    <% for (let i in provider.esxi) { %>
+    v.<%= i %> = "<%= provider.esxi[i] %>"
+    <% } %>
   end
   config.vm.hostname = "<%= provider.hostname %>"
   config.vm.network "<%= provider.network.type %>", ip: "<%= provider.network.ip %>"

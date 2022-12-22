@@ -23,6 +23,7 @@ export default class Vagranfile {
         hostname: 'localhost',
         usable_port_range: '(2200..2250)',
         customize: [],
+        esxi: {},
       },
       synced_folder: {
         type: 'virtualbox',

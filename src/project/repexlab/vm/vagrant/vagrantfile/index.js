@@ -21,6 +21,7 @@ export default class Vagranfile {
         cpus: 2,
         gui: false,
         hostname: 'localhost',
+        usable_port_range: '(2200..2250)',
         customize: [],
       },
       synced_folder: {

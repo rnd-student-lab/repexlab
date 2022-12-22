@@ -15,6 +15,8 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "<%= provider.hostname %>"
   config.vm.network "<%= provider.network.type %>", ip: "<%= provider.network.ip %>"
 
+  config.vm.usable_port_range = <%= provider.usable_port_range %>
+
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   <% if (synced_folder.type == 'nfs') { %>

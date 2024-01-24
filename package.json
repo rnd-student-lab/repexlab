@@ -1,6 +1,6 @@
 {
   "name": "repexlab",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "CLI instrument providing a framework for conducting experiments on software quality in virtual environment",
   "main": "build/index.js",
   "author": "Dmitry Ilin <i@dmitryilin.com>",

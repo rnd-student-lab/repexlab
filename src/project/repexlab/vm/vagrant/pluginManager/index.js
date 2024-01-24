@@ -1,7 +1,9 @@
 import { join } from 'node:path';
 import { platform } from 'node:process';
+import { homedir } from 'node:os';
 import execa from 'execa';
 import {
+  isEmpty,
   map,
   reduce, some, split, startsWith
 } from 'lodash';
@@ -20,12 +22,15 @@ export default class PluginManager {
     this.installedPlugins = [];
     this.vmTargetDirectory = vmTargetDirectory;
 
+    this.userHomeDirectory = homedir();
+
     this.vagrantDirectory = '.vagrant';
+    this.vagrantHomeDirectory = '.vagrant.d';
     this.pluginListFile = 'plugins.json';
   }
 
   async installPlugin(plugin) {
-    await execa(`vagrant plugin install --local ${plugin}`, {
+    await execa('vagrant', ['plugin', 'install', '--local', plugin], {
       cwd: this.vmTargetDirectory,
     });
     await this.refreshInstalledPlugins();
@@ -35,14 +40,33 @@ export default class PluginManager {
     return some(this.installedPlugins, (line) => startsWith(line, plugin));
   }
 
-  async refreshInstalledPlugins() {
+  async getLocalPlugins() {
     try {
       const plugins = await readJSON(
         join(this.vmTargetDirectory, this.vagrantDirectory, this.pluginListFile)
       );
-      this.installedPlugins = map(plugins.installed, (data, plugin) => `${plugin} (${data.installed_gem_version}, local)`);
+      return map(plugins.installed, (data, plugin) => `${plugin} (${data.installed_gem_version}, local)`);
     } catch (e) {
-      const { stdout } = await execa('vagrant plugin list --local', {
+      return [];
+    }
+  }
+
+  async getGlobalPlugins() {
+    try {
+      const plugins = await readJSON(
+        join(this.userHomeDirectory, this.vagrantHomeDirectory, this.pluginListFile)
+      );
+      return map(plugins.installed, (data, plugin) => `${plugin} (${data.installed_gem_version}, global)`);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async refreshInstalledPlugins() {
+    this.installedPlugins = [...(await this.getLocalPlugins()), ...(await this.getGlobalPlugins())];
+
+    if (isEmpty(this.installedPlugins)) {
+      const { stdout } = await execa('vagrant', ['plugin', 'list', '--local'], {
         cwd: this.vmTargetDirectory,
       });
       this.installedPlugins = split(stdout, '\n');

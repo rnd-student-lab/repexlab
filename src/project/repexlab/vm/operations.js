@@ -7,7 +7,7 @@ import {
 } from 'path';
 import * as vagrant from 'node-vagrant';
 import {
-  first, get, includes, reduce, replace, split, trim
+  first, get, includes, reduce, replace, split, trim, some
 } from 'lodash';
 import { spawn } from 'child_process';
 import SSH2Promise from 'ssh2-promise';
@@ -21,6 +21,11 @@ vagrant.promisify();
 export default class VirtualMachineOperations {
   constructor(compilationTargetDirectory) {
     this.compilationTargetDirectory = compilationTargetDirectory;
+
+    this.possibleSCPErrors = [
+      'No such file or directory',
+      'path canonicalization failed'
+    ];
   }
 
   async start() {
@@ -53,7 +58,12 @@ export default class VirtualMachineOperations {
     await this.exec('sudo bash -c "mkdir -m 777 -p /provision/"');
     await reduce(config.provision, async (acc, provision, i) => {
       await acc;
-      await this.copy(projectPath, 'in', provision.directory, `/provision/${i}/`);
+      try {
+        await this.copy(projectPath, 'in', provision.directory, `/provision/${i}/`);
+      } catch (e) {
+        // Fallback for 'path canonicalization failed' issue
+        await this.copy(projectPath, 'in', provision.directory, `/provision/${i}`);
+      }
     }, Promise.resolve());
 
     const machine = vagrant.create({ cwd: this.compilationTargetDirectory });
@@ -161,7 +171,7 @@ export default class VirtualMachineOperations {
     const out = await execa.command(command, {
       cwd: this.compilationTargetDirectory
     });
-    if (includes(out.stderr, 'No such file or directory')) {
+    if (some(this.possibleSCPErrors, (possibleError) => includes(out.stderr, possibleError))) {
       throw out.stderr.toString();
     }
   }
